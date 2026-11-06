@@ -1,0 +1,607 @@
+/**
+ * Database table styles.
+ *
+ * The geometry here is measured from a reference screenshot at 2x
+ * (analysis/ref/database-screenshot.png, 2734x1496):
+ *
+ *   row height          37px
+ *   first column        ~276px
+ *   middle columns      ~180-200px
+ *   separator           --ow-border, 1px, full-width only
+ *
+ * Two details that are easy to get wrong and are visible when they are:
+ *
+ *   - Separators run horizontally only. Vertical rules between columns make a
+ *     grid read as a spreadsheet; the reference draws a table, and the absence of
+ *     vertical lines is most of why.
+ *   - The first column is markedly wider than the rest. Equal columns are the
+ *     default in every data grid and they are wrong here: the row title needs
+ *     room, and a title column as narrow as the others truncates every row.
+ *
+ * Values come from tokens. A layout that needs a literal number is a layout
+ * whose intent is not written down.
+ */
+
+.ow-db {
+  padding: var(--ow-space-6) var(--ow-space-8) 40vh;
+}
+
+.ow-db-title {
+  font-size: var(--ow-type-title);
+  font-weight: 700;
+  line-height: 1.2;
+  margin-bottom: var(--ow-space-4);
+}
+
+/* -------------------------------------------------------------- view tabs */
+
+.ow-db-views {
+  display: flex;
+  align-items: center;
+  gap: var(--ow-space-1);
+  margin-bottom: var(--ow-space-2);
+  flex-wrap: wrap;
+}
+
+.ow-db-view {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--ow-space-2);
+  padding: var(--ow-space-1) var(--ow-space-3);
+  border: 0;
+  border-radius: var(--ow-radius-pill);
+  background: transparent;
+  color: var(--ow-text-muted);
+  font: inherit;
+  font-size: var(--ow-type-body);
+  cursor: pointer;
+}
+
+.ow-db-view:hover {
+  background: var(--ow-bg-hover);
+  color: var(--ow-text);
+}
+
+.ow-db-view.is-active {
+  background: var(--ow-bg-active);
+  color: var(--ow-text);
+}
+
+
+/* ------------------------------------------------------------------ table */
+
+.ow-db-table {
+  /* The table is wider than the reading measure. A database is scanned, not
+     read, so it is allowed to use the full width the reference gives it. */
+  width: 100%;
+  min-width: 720px;
+}
+
+.ow-db-row {
+  display: flex;
+  align-items: stretch;
+  min-height: 37px;
+  border-bottom: 1px solid var(--ow-border);
+}
+
+.ow-db-head .ow-db-cell {
+  color: var(--ow-text-muted);
+  font-size: var(--ow-type-body);
+  font-weight: 500;
+}
+
+.ow-db-cell {
+  display: flex;
+  align-items: center;
+  gap: var(--ow-space-2);
+  flex: 1 1 190px;
+  min-width: 0;
+  padding: var(--ow-space-1) var(--ow-space-2);
+  color: var(--ow-text);
+  font-size: var(--ow-type-body);
+}
+
+.ow-db-cell--title {
+  /* The measured 276px, and deliberately wider than the others. */
+  flex: 0 0 276px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.ow-db-cell--title:hover {
+  background: var(--ow-bg-hover);
+}
+
+/* ------------------------------------------------------------------ cells */
+
+.ow-db-title-input {
+  flex: 1 1 auto;
+  min-width: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  padding: 2px 4px;
+  border-radius: var(--ow-radius-sm);
+  outline: none;
+}
+
+.ow-db-title-input:focus {
+  background: var(--ow-bg-selected);
+}
+
+.ow-db-check {
+  width: 15px;
+  height: 15px;
+  accent-color: var(--ow-accent);
+  cursor: pointer;
+}
+
+.ow-db-number {
+  width: 100%;
+  min-width: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  padding: 2px 4px;
+  border-radius: var(--ow-radius-sm);
+  outline: none;
+}
+
+.ow-db-number:focus {
+  background: var(--ow-bg-selected);
+}
+
+/*
+ * A select pill: a translucent fill of the option's own colour with the colour
+ * itself as the text. Translucent rather than solid because a solid chip at this
+ * size turns a column of them into a colour bar that out-shouts the row titles.
+ */
+.ow-db-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 1px var(--ow-space-2);
+  border-radius: var(--ow-radius-sm);
+  font-size: var(--ow-type-body-small);
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.ow-db-pills {
+  display: inline-flex;
+  gap: var(--ow-space-1);
+  flex-wrap: wrap;
+}
+
+.ow-db-date,
+.ow-db-text {
+  color: var(--ow-text-secondary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Reading material, not an affordance: this is the word a user reads when a cell
+   has nothing in it. It belongs on textMuted, which clears 4.5:1. textFaint is
+   reserved for handles, chevrons and counts. */
+.ow-db-empty {
+  color: var(--ow-text-muted);
+}
+
+/* --------------------------------------------------------------- add row */
+
+.ow-db-add {
+  border-bottom: 0;
+}
+
+.ow-db-add-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--ow-space-2);
+  padding: var(--ow-space-2);
+  border: 0;
+  background: transparent;
+  color: var(--ow-text-muted);
+  font: inherit;
+  font-size: var(--ow-type-body);
+  cursor: pointer;
+}
+
+.ow-db-add-btn:hover {
+  background: var(--ow-bg-hover);
+  color: var(--ow-text);
+}
+
+/* ------------------------------------------------------------------- board */
+
+/*
+ * Columns are a fixed width and scroll horizontally, rather than sharing the
+ * viewport. A board whose columns resize to fit squeezes a group of five cards
+ * into the same space as a group of one, and the card -- which is the thing being
+ * scanned -- is what ends up unreadable.
+ */
+.ow-board {
+  display: flex;
+  gap: var(--ow-space-3);
+  align-items: flex-start;
+  overflow-x: auto;
+  padding-bottom: var(--ow-space-4);
+}
+
+.ow-board--empty {
+  color: var(--ow-text-muted);
+  font-size: var(--ow-type-body);
+  padding: var(--ow-space-6) 0;
+}
+
+/* A recessed well the cards sit in, not an interaction state. It needs its own
+   token: as an alpha overlay it followed whatever was behind it, and the cards
+   inside it then had no reliable colour to sit on. */
+.ow-board-col {
+  flex: 0 0 260px;
+  background: var(--ow-bg-sunken);
+  border-radius: var(--ow-radius-md);
+  padding: var(--ow-space-2);
+}
+
+.ow-board-head {
+  display: flex;
+  align-items: center;
+  gap: var(--ow-space-2);
+  padding: var(--ow-space-1) var(--ow-space-2);
+  font-size: var(--ow-type-body-small);
+  font-weight: 600;
+  color: var(--ow-text);
+}
+
+.ow-board-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex: 0 0 auto;
+}
+
+.ow-board-count {
+  margin-left: auto;
+  color: var(--ow-text-faint);
+  font-weight: 400;
+}
+
+.ow-board-cards {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ow-space-1);
+  margin-top: var(--ow-space-1);
+}
+
+.ow-board-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ow-space-1);
+  align-items: flex-start;
+  padding: var(--ow-space-2);
+  border: 0;
+  border-radius: var(--ow-radius-sm);
+  background: var(--ow-bg);
+  color: var(--ow-text);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.ow-board-card:hover {
+  background: var(--ow-bg-hover);
+}
+
+.ow-board-card-title {
+  font-size: var(--ow-type-body);
+  font-weight: 500;
+  line-height: 1.3;
+}
+
+.ow-board-field {
+  font-size: var(--ow-type-caption);
+  color: var(--ow-text-muted);
+}
+
+/* -------------------------------------------------------------- query bar */
+
+/* Native selects, styled to match. A custom listbox would be nicer to look at and
+   would also have to reimplement keyboard navigation, type-ahead and the popup
+   that the platform already provides correctly on every version of Windows. */
+.ow-db-query {
+  display: flex;
+  align-items: center;
+  gap: var(--ow-space-2);
+  flex-wrap: wrap;
+  margin-bottom: var(--ow-space-3);
+}
+
+.ow-db-query-field {
+  display: inline-flex;
+}
+
+.ow-db-query-field select {
+  padding: var(--ow-space-1) var(--ow-space-2);
+  border: 1px solid var(--ow-border);
+  border-radius: var(--ow-radius-sm);
+  background: var(--ow-bg-overlay);
+  color: var(--ow-text-secondary);
+  font: inherit;
+  font-size: var(--ow-type-body-small);
+  cursor: pointer;
+}
+
+.ow-db-query-field select:hover {
+  color: var(--ow-text);
+}
+
+.ow-db-query-btn {
+  padding: var(--ow-space-1) var(--ow-space-2);
+  border: 1px solid var(--ow-border);
+  border-radius: var(--ow-radius-sm);
+  background: var(--ow-bg-overlay);
+  color: var(--ow-text-secondary);
+  font-size: var(--ow-type-body-small);
+  cursor: pointer;
+}
+
+.ow-db-query-btn:hover {
+  background: var(--ow-bg-hover);
+  color: var(--ow-text);
+}
+
+/* Faint on purpose: it is a fact about the result, not an action. */
+.ow-db-query-count {
+  color: var(--ow-text-muted);
+  font-size: var(--ow-type-body-small);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ------------------------------------------------------------- list view */
+
+/* Dense by design: this view is for scanning many rows. Rows are a list of
+   buttons, so the whole row is the hit target rather than the title text. */
+.ow-list {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--ow-border);
+  border-radius: var(--ow-radius-md);
+  overflow: hidden;
+}
+
+.ow-list-row {
+  display: flex;
+  align-items: center;
+  gap: var(--ow-space-4);
+  padding: var(--ow-space-2) var(--ow-space-3);
+  border: none;
+  border-bottom: 1px solid var(--ow-border);
+  background: var(--ow-bg);
+  color: var(--ow-text);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  min-width: 0;
+}
+
+.ow-list-row:last-child {
+  border-bottom: none;
+}
+
+.ow-list-row:hover {
+  background: var(--ow-bg-hover);
+}
+
+.ow-list-title {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-weight: var(--ow-type-weight-medium, 500);
+}
+
+.ow-list-cell {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--ow-space-1);
+  color: var(--ow-text-secondary);
+  font-size: var(--ow-type-body-small);
+  max-width: 180px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ow-list-cell--empty {
+  color: var(--ow-text-faint);
+}
+
+/* ----------------------------------------------------------- gallery view */
+
+.ow-gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: var(--ow-space-3);
+  padding: var(--ow-space-3) 0;
+}
+
+.ow-card {
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+  border: 1px solid var(--ow-border);
+  border-radius: var(--ow-radius-md);
+  background: var(--ow-bg);
+  overflow: hidden;
+  cursor: pointer;
+  text-align: left;
+  font: inherit;
+  color: inherit;
+  min-width: 0;
+}
+
+.ow-card:hover {
+  border-color: var(--ow-border-strong);
+  box-shadow: 0 6px 18px rgba(15, 23, 42, 0.08);
+}
+
+/* An empty cover keeps the card the same height as its neighbours rather than
+   collapsing, so a grid stays a grid. */
+.ow-card-cover {
+  display: flex;
+  align-items: center;
+  padding: var(--ow-space-3);
+  min-height: 72px;
+  background: var(--ow-bg-sunken);
+  color: var(--ow-text-secondary);
+  font-size: var(--ow-type-body-small);
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ow-card-cover[data-empty='true'] {
+  background: transparent;
+  border-bottom: 1px solid var(--ow-border);
+}
+
+.ow-card-body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ow-space-1);
+  padding: var(--ow-space-2) var(--ow-space-3) var(--ow-space-3);
+  min-width: 0;
+}
+
+.ow-card-title {
+  font-weight: var(--ow-type-weight-medium, 500);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ow-card-field {
+  color: var(--ow-text-secondary);
+  font-size: var(--ow-type-body-small);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ------------------------------------------------------ hide and show columns */
+
+/* The hide button appears on hover so a header row is not a wall of close
+   icons, but it is always in the DOM so it is reachable by keyboard. */
+.ow-db-cell--hidable {
+  position: relative;
+}
+
+.ow-db-hide {
+  opacity: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  margin-left: var(--ow-space-1);
+  padding: 0;
+  border: none;
+  border-radius: 3px;
+  background: none;
+  color: var(--ow-text-faint);
+  cursor: pointer;
+}
+
+.ow-db-cell--hidable:hover .ow-db-hide,
+.ow-db-hide:focus-visible {
+  opacity: 1;
+}
+
+.ow-db-hide:hover {
+  background: var(--ow-bg-active);
+  color: var(--ow-text);
+}
+
+/* The restore row sits under the header rather than in a menu, so hiding a
+   column is reversible from the same screen. */
+.ow-db-columns {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--ow-space-1);
+  padding: var(--ow-space-2) 0;
+}
+
+.ow-db-columns-label {
+  color: var(--ow-text-faint);
+  font-size: var(--ow-type-caption);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.ow-db-columns-add {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--ow-space-1);
+  padding: 4px 10px;
+  border: 1px solid var(--ow-border);
+  border-radius: var(--ow-radius-full, 999px);
+  background: var(--ow-bg);
+  color: var(--ow-text-secondary);
+  font: inherit;
+  font-size: var(--ow-type-body-small);
+  cursor: pointer;
+}
+
+.ow-db-columns-add:hover {
+  background: var(--ow-bg-hover);
+  color: var(--ow-text);
+}
+
+/* ------------------------------------------------- person and files properties */
+
+/* A person is a chip, because a name in a column reads as a person rather than
+   as a string. The title carries the id for the rare case where the name was
+   edited and the value still points at the old one. */
+.ow-db-people {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 3px;
+  align-items: center;
+}
+
+.ow-db-person {
+  display: inline-flex;
+  align-items: center;
+  padding: 1px 7px;
+  border-radius: var(--ow-radius-full, 999px);
+  background: var(--ow-bg-badge);
+  color: var(--ow-text-secondary);
+  font-size: var(--ow-type-caption);
+  white-space: nowrap;
+}
+
+/* Files show their name and an icon. The size and type are in the tooltip,
+   because a column of byte counts is unreadable at a glance. */
+.ow-db-files {
+  display: inline-flex;
+  flex-direction: column;
+  gap: 1px;
+  align-items: flex-start;
+  min-width: 0;
+}
+
+.ow-db-file {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  max-width: 100%;
+  color: var(--ow-text-secondary);
+  font-size: var(--ow-type-caption);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

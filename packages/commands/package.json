@@ -1,0 +1,13 @@
+{
+  "name": "@ow/commands",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "L3. The command registry: one id space driving the UI, shortcuts, search, CLI and MCP.",
+  "dependencies": {
+    "@ow/geom": "0.1.0",
+    "@ow/model": "0.1.0",
+    "@ow/storage": "0.1.0"
+  },
+  "exports": { ".": "./src/index.ts", "./view-query": "./src/view-query.ts" }
+}

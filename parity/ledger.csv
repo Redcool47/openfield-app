@@ -1,0 +1,173 @@
+id,area,tier,feature,source,status,proof,notes
+SIDEBAR-0001,sidebar,T1,Nested page tree with expand and collapse,HINT,DONE,apps/desktop/src/renderer/App.tsx,
+SIDEBAR-0002,sidebar,T1,Resizable sidebar with min and max width,HINT,DONE,apps/desktop/src/renderer/App.tsx;apps/desktop/src/renderer/preferences.ts;tests/parity/preferences.test.ts,Drag handle plus arrow keys on a focusable separator. Width is held locally during the drag and written once at the end  because setPreferences hits localStorage on every call.
+SIDEBAR-0003,sidebar,T1,Collapse sidebar with a button,HINT,DONE,apps/desktop/src/renderer/App.tsx,
+SIDEBAR-0004,sidebar,T1,Workspace switcher,HINT,TODO,,
+SIDEBAR-0005,sidebar,T1,Favourites section,HINT,DONE,apps/desktop/src/renderer/App.tsx,
+SIDEBAR-0006,sidebar,T1,Trash section,HINT,DONE,apps/desktop/src/renderer/App.tsx,
+SIDEBAR-0007,sidebar,T1,Section headers collapse,HINT,DONE,apps/desktop/src/renderer/App.tsx,
+SIDEBAR-0008,sidebar,T1,Row hover shows a more menu and an add child button,HINT,DONE,apps/desktop/src/renderer/App.tsx,
+SIDEBAR-0009,sidebar,T1,Drag a row to reorder or nest,HINT,DONE,apps/desktop/src/renderer/App.tsx;tests/e2e/sidebar-drag.spec.ts,Top third reorders above  middle nests  bottom reorders below. The drop zone is computed from the drop event's own coordinates  not read from dragover state: state does not flush until React re-renders  and a dragover immediately followed by a drop left it null so the drop silently did nothing.
+SIDEBAR-0010,sidebar,T1,Row context menu with duplicate rename move and copy link,HINT,DONE,apps/desktop/src/renderer/App.tsx,Duplicate and rename were live; Move to... resolves a parent by exact title and Copy link writes an openfield deep link.
+SIDEBAR-0014,sidebar,T1,Move to trash from the row menu without opening the page,operator-requirement,DONE,packages/commands/src/builtin.ts;tests/parity/slice-1.test.ts,Command page.moveToTrash;Command takes an explicit page id so a sidebar row can be deleted while a different page is open
+SIDEBAR-0015,sidebar,T1,Keyboard alternative for moving a page,HINT,DONE,packages/storage/src/repository.ts;tests/parity/page-reorder.test.ts,Alt+ArrowUp/Down on a focused sidebar row. The repository renumbers every sibling position in one transaction because two pages sharing a position leaves the order to the database.
+SIDEBAR-0016,sidebar,T2,Recents list,HINT,DONE,apps/desktop/src/renderer/App.tsx;packages/storage/src/repository.ts;tests/e2e/recents.spec.ts,noteOpened and recentPages already existed and were already wired; the Recents section is new. trashPage now drops recency for the whole subtree -- the row used to survive and the list offered a destination that opened onto an empty page in the bin.
+SIDEBAR-0017,sidebar,T2,Tab strip within a window,HINT,TODO,,
+NAV-0001,nav,T1,Breadcrumb of ancestors,HINT,DONE,apps/desktop/src/renderer/App.tsx;tests/e2e/navigation.spec.ts,"The chain is derived from state.pages which already carries parentPage. A read needs no command and no model change."
+NAV-0002,nav,T1,Back and forward navigation,HINT,DONE,apps/desktop/src/renderer/App.tsx;tests/e2e/navigation.spec.ts,"Ctrl+[ and Ctrl+] and Alt+Arrow plus the two buttons. Recorded inside run -- the one place every open passes through -- so a new entry point cannot be silently untracked."
+NAV-0003,nav,T1,Restore scroll position on back,HINT,DONE,apps/desktop/src/renderer/App.tsx,Scroll offset remembered per page and restored in a layout effect. A normal effect runs before paint and a scrollTop set against a stale layout is discarded. Map is bounded at 50 pages.
+TRASH-0001,nav,T1,Trash view lists deleted pages,HINT,DONE,apps/desktop/src/renderer/App.tsx,
+TRASH-0002,nav,T1,Restore from trash returns the page to its original parent,operator-requirement,DONE,packages/storage/src/repository.ts;tests/parity/slice-1.test.ts,Uses a recursive CTE over the page tree.;
+TRASH-0003,nav,T1,Delete permanently from trash,HINT,DONE,packages/commands/src/builtin.ts,
+TRASH-0004,nav,T2,Retention policy and purge of unreferenced assets,HINT,TODO,,
+PAGE-0001,page,T1,Page title as the first block,HINT,TODO,,
+PAGE-0002,page,T1,Page icon and cover,HINT,DONE,packages/commands/src/builtin.ts;tests/parity/page-appearance.test.ts;apps/desktop/src/renderer/App.tsx,Page icon plus a cover that can be set and cleared.
+PAGE-0003,page,T1,Page width modes including full width,HINT,DONE,packages/commands/src/builtin.ts;tests/parity/page-appearance.test.ts;apps/desktop/src/renderer/App.tsx,Full width per page. The column existed from the first migration and nothing wrote it.
+PAGE-0004,page,T1,Small text toggle,HINT,DONE,packages/commands/src/builtin.ts;tests/parity/page-appearance.test.ts;apps/desktop/src/renderer/App.tsx,Small text per page.
+PAGE-0005,page,T1,Page font choice,HINT,DONE,packages/commands/src/builtin.ts;tests/parity/page-appearance.test.ts;apps/desktop/src/renderer/App.tsx,Sans serif mono. The font is validated against three names because it becomes a CSS font-family.
+PAGE-0006,page,T1,Page properties area for database rows,HINT,DONE,apps/desktop/src/shared/view-model.ts;apps/desktop/src/renderer/App.tsx;packages/storage/src/databases.ts;tests/e2e/page-properties.spec.ts,Blocked until now because a row page and an ordinary document were indistinguishable: listCollections(pageId) answers only whether a page *hosts* a collection. rowOf answers the other question. Renders the same Cell the table uses  so a value edited on the page and in the table are the same editor.
+PAGE-0007,page,T2,Page lock,HINT,DONE,packages/storage/src/repository.ts;packages/commands/src/builtin.ts;apps/desktop/src/renderer/App.tsx;tests/parity/page-meta.test.ts;tests/e2e/page-meta.spec.ts,The locked column had been in the schema since the first migration with nothing writing to it. A column is not a feature.
+PAGE-0008,page,T2,Backlinks section,HINT,DONE,packages/storage/src/repository.ts;packages/commands/src/builtin.ts;apps/desktop/src/renderer/App.tsx;tests/parity/page-meta.test.ts;tests/e2e/page-meta.spec.ts,A mention is an inline node in a block's content  so the backlink index is the content itself. The SQL narrows with a LIKE and the rows are then parsed and checked -- a LIKE match alone would report a page that merely contains the same characters.
+PAGE-0009,page,T2,Last edited by and on,HINT,DONE,apps/desktop/src/renderer/preferences.ts;apps/desktop/src/renderer/App.tsx;tests/e2e/page-meta.spec.ts,Last edited by and on  under the title. The name is local -- there are no accounts -- and empty by default  because a blank name is honest and a made-up one would be a lie about who touched the page.
+PAGE-0010,page,T1,Duplicate a page,HINT,DONE,packages/commands/src/builtin.ts;tests/parity/page-duplicate.test.ts,
+PAGE-0011,page,T1,Move a page to another parent,HINT,DONE,packages/commands/src/builtin.ts;tests/parity/page-move.test.ts,Fixed: an empty parentPage is top level. ?? null does not catch it -- '' is not nullish  so it was written into parent_page and the page became unreachable in the tree. The sidebar's own Move to... top-level entry sent exactly that value.
+MODEL-0001,editor,T1,Block tree with stable ids,HINT,DONE,packages/model/test/model.test.ts,
+MODEL-0002,editor,T1,Enter splits at the caret and carries the tail,HINT,DONE,packages/model/test/model.test.ts,
+MODEL-0003,editor,T1,Enter on an empty list item exits the list,HINT,DONE,packages/model/test/model.test.ts,
+MODEL-0004,editor,T1,Enter on an empty heading drops to a paragraph,HINT,DONE,packages/model/test/model.test.ts,
+MODEL-0005,editor,T1,Enter in a code block inserts a newline,HINT,DONE,packages/model/test/model.test.ts,
+MODEL-0006,editor,T1,Backspace at start turns a styled block into a paragraph,HINT,DONE,packages/model/test/model.test.ts,
+MODEL-0007,editor,T1,Backspace at start merges into the previous block,HINT,DONE,packages/model/test/model.test.ts,
+MODEL-0008,editor,T1,Backspace deletes one grapheme cluster not one code unit,HINT,DONE,packages/model/test/model.test.ts,
+MODEL-0009,editor,T1,Backspace re-parents children rather than orphaning them,HINT,DONE,packages/model/test/model.test.ts,
+MODEL-0010,editor,T1,Tab indents under the previous sibling,HINT,DONE,packages/model/test/model.test.ts,
+MODEL-0011,editor,T1,Shift+Tab outdents,HINT,DONE,packages/model/test/model.test.ts,
+MODEL-0012,editor,T1,Move a block up and down,HINT,DONE,packages/model/test/model.test.ts,
+MODEL-0013,editor,T1,Duplicate a block and its subtree with fresh ids,HINT,DONE,packages/model/test/model.test.ts,
+MODEL-0014,editor,T1,Turn into via a registry that blocks invalid targets,HINT,DONE,packages/model/test/model.test.ts,
+MODEL-0015,editor,T1,Children are promoted when a block converts to a non-nesting type,HINT,DONE,packages/model/test/model.test.ts,
+MODEL-0016,editor,T1,Toggle a to-do checkbox,HINT,DONE,packages/model/test/model.test.ts,
+MODEL-0017,editor,T1,Toggle a disclosure triangle and persist the open state,HINT,DONE,packages/model/test/model.test.ts,
+MODEL-0018,editor,T1,Fractional sibling ordering that survives bulk reorder,HINT,DONE,packages/geom/test/geom.test.ts,
+MODEL-0019,editor,T1,Time-sortable ids,HINT,DONE,packages/geom/test/geom.test.ts,
+MODEL-0020,editor,T1,Soft delete with restore to the original parent,HINT,DONE,packages/model/test/model.test.ts,
+HIST-0001,history,T1,Undo and redo across structural edits,HINT,DONE,packages/model/test/model.test.ts,
+HIST-0002,history,T1,Typing coalesces into one undo step,HINT,DONE,packages/model/test/model.test.ts,
+HIST-0003,history,T1,Structural changes never coalesce with typing,HINT,DONE,packages/model/test/model.test.ts,
+HIST-0004,history,T1,A new action clears the redo stack,HINT,DONE,packages/model/test/model.test.ts,
+HIST-0005,history,T1,Undo survives a long random edit sequence,HINT,DONE,packages/model/test/model.test.ts,
+HIST-0006,history,T1,Every transaction asserts the tree stays valid,HINT,DONE,packages/model/src/transaction.ts,TxContext.assertConsistent;
+HIST-0020,history,T2,Page version snapshots,HINT,DONE,packages/commands/src/builtin.ts;packages/commands/src/session.ts;apps/desktop/src/renderer/history-panel.tsx;tests/parity/history.test.ts;tests/e2e/history-panel.spec.ts,A version is captured at the START of a burst of edits and at the end of it  so the list holds both sides of every change -- a version saved afterwards cannot restore what the edit destroyed. Restoring saves the current state as a new version first  so the history is never lossy.
+HIST-0021,history,T2,Restore a version keeps the replaced version reachable,HINT,DONE,packages/commands/src/builtin.ts,Command page.history.restore;
+HIST-0022,history,T2,Visual diff between versions,HINT,TODO,,
+SEL-0001,selection,T1,Caret and range inside one block,HINT,DONE,packages/model/test/model.test.ts,
+SEL-0002,selection,T1,Block selection with anchor and focus,HINT,DONE,packages/model/test/model.test.ts,
+SEL-0003,selection,T1,Page level selection,HINT,DONE,packages/model/test/model.test.ts,
+SEL-0004,selection,T1,Select all twice escalates text then page,HINT,DONE,packages/model/test/model.test.ts,
+SEL-0005,selection,T1,Delete computes subtree ids once per selection,HINT,DONE,packages/model/test/model.test.ts,
+SEL-0006,selection,T1,Clipboard text for a selection,HINT,DONE,packages/model/test/model.test.ts,
+SEL-0007,selection,T1,Esc selects the current block,HINT,DONE,apps/desktop/src/renderer/editor.tsx;tests/e2e/block-drag.spec.ts,Escape narrows a range to the block holding the caret rather than clearing it.
+SEL-0010,selection,T1,Margin drag select rectangle,HINT,DONE,apps/desktop/src/renderer/band-select.ts;apps/desktop/src/renderer/editor.tsx;tests/parity/band-select.test.ts;tests/e2e/band-select.spec.ts,Listener is on the scroll container  not on .ow-blocks: the blocks div is exactly as wide as the content  so the margin the user aims at is the container's own padding. Touching edges count as no overlap.
+SEL-0011,selection,T1,Drag handle with grip and plus button,HINT,DONE,apps/desktop/src/renderer/editor.tsx;tests/e2e/block-drag.spec.ts,Draggable gutter with a plus that inserts below the focused block. The plus lives in the gutter because anything inside the contenteditable can receive a caret.
+SEL-0012,selection,T1,Autoscroll while dragging,HINT,DONE,apps/desktop/src/renderer/band-select.ts,startAutoScroll drives both the band and block drag. Ramps with closeness rather than jumping to a constant  and never returns a sub-pixel step because scrollBy with one is a no-op that looks like a hang.
+INLINE-0001,inline,T1,Bold italic underline strikethrough and inline code,HINT,DONE,packages/model/src/rich-text.ts;packages/commands/src/builtin.ts,Commands mark.*.toggle;
+INLINE-0002,inline,T1,Marks overlap and normalise without unbounded run growth,HINT,DONE,packages/model/test/model.test.ts,
+INLINE-0003,inline,T1,Toggle a mark across part of a run,HINT,DONE,packages/model/test/model.test.ts,
+INLINE-0010,inline,T1,Floating selection toolbar,HINT,DONE,apps/desktop/src/renderer/editor.tsx;tests/e2e/selection-toolbar.spec.ts,Fixed against a measured rect re-taken on every scroll and resize. Measuring on render was not enough: scrolling changes nothing about the block id or offsets  so React never re-rendered and the toolbar stayed put while its text moved. Buttons use mousedown because a click collapses the selection it targets.
+INLINE-0011,inline,T1,Link marks,HINT,DONE,apps/desktop/src/renderer/editor.tsx;tests/e2e/inline-marks.spec.ts,Runs now reach the renderer and renderRuns draws them from data-attributes. Every earlier mark test asserted the model  which is how bold/italic/strike/link shipped stored-but-invisible. A link is a span not an anchor: an anchor inside a contenteditable swallows the click.
+INLINE-0012,inline,T1,Page mentions via an at sign,HINT,DONE,apps/desktop/src/renderer/editor.tsx;packages/commands/src/builtin.ts;packages/model/src/rich-text.ts;tests/e2e/mentions.spec.ts,Only fires at a word boundary  so an @ inside a word stays an email address. The query text is replaced by the page title as real characters carrying an inline node -- storing the literal @proj would leave search  export and word count disagreeing with the screen. Keyboard is handled in the editor  not on the menu  because the menu never takes focus.
+INLINE-0013,inline,T2,Emoji picker,HINT,TODO,,
+SLASH-0001,slash,T1,Slash menu generated from the block registry,HINT,DONE,apps/desktop/src/renderer/editor.tsx;tests/e2e/slash-menu.spec.ts,Entries come from slashEntries() in the model registry. The hand-written list is gone - two lists is how a new block type ends up unreachable from the menu.
+SLASH-0002,slash,T1,Fuzzy filter with alias match,HINT,DONE,apps/desktop/src/renderer/editor.tsx;tests/e2e/slash-menu.spec.ts,Matches the label and every registry alias. /h1 finds Heading 1.
+SLASH-0003,slash,T1,Arrow keys navigate and Enter picks,HINT,DONE,apps/desktop/src/renderer/editor.tsx;tests/e2e/slash-menu.spec.ts,ArrowUp/ArrowDown wrap and aria-selected follows. Enter or Tab picks.
+SLASH-0004,slash,T1,Backspacing past the slash closes the menu,HINT,DONE,apps/desktop/src/renderer/editor.tsx,The menu is recomputed from the caret on every input so backspacing past the slash closes it by construction rather than by a separate rule.
+MARKDOWN-0001,import,T1,Markdown shortcuts for headings and lists,HINT,DONE,packages/model/src/registry.ts;apps/desktop/src/renderer/editor.tsx,
+MARKDOWN-0002,import,T1,Markdown export preserving block types,HINT,DONE,packages/model/src/export.ts,(kept)
+MARKDOWN-0003,import,T1,Markdown import,HINT,DONE,packages/commands/src/builtin.ts;packages/model/src/import.ts;tests/parity/import.test.ts,Reads the subset Openfield writes so an export round-trips. Fenced code is read first or its body becomes headings. 22 tests including a round trip.
+CSV-0001,import,T1,CSV import with inferred types,HINT,DONE,packages/commands/src/builtin.ts;packages/model/src/import.ts;tests/parity/import.test.ts,Type inference runs over the whole column so a leading N/A cannot type it text forever. First column becomes the row title.
+CSV-0002,export,T1,CSV export,HINT,DONE,packages/commands/src/builtin.ts;packages/model/src/export.ts;tests/parity/export.test.ts,rowsToCsv quotes only on delimiter quote or newline. The title goes through the same quoting - joining it raw split a row named 'Do it  now' into two columns.
+DB-CORE-0001,db-core,T1,Collections with typed properties,HINT,DONE,apps/desktop/src/renderer/table.tsx;packages/commands/src/view-query.ts;tests/parity/view-query.test.ts,Schema carries a typed property list and the query layer switches on the type.
+DB-CORE-0002,db-core,T1,Rows are pages,HINT,DONE,apps/desktop/src/renderer/table.tsx,Rows are pages - they render as page rows and appear in the sidebar tree.
+DB-CORE-0003,db-core,T1,Multiple views per collection,HINT,DONE,apps/desktop/src/renderer/table.tsx,View switcher over db.views.
+DB-CORE-0004,db-core,T1,Table view,HINT,DONE,apps/desktop/src/renderer/table.tsx,The default view renders a table.
+DB-CORE-0005,db-core,T1,Inline editing per property type,HINT,DONE,apps/desktop/src/renderer/table.tsx,Per-type cell editors writing through db.value.set.
+DB-CORE-0006,db-core,T1,Filters,HINT,DONE,packages/commands/src/view-query.ts;tests/parity/view-query.test.ts,23 tests cover operators empties and rule combination.
+DB-CORE-0007,db-core,T1,Sorts,HINT,DONE,packages/commands/src/view-query.ts;tests/parity/view-query.test.ts,Numeric ISO and empties-last ordering tested.
+DB-CORE-0008,db-core,T1,Groups,HINT,DONE,packages/commands/src/view-query.ts;tests/parity/view-query.test.ts,Every declared option gets a group even when empty.
+DB-CORE-0009,db-core,T1,Hide and show columns,HINT,DONE,apps/desktop/src/renderer/table.tsx,Hide on the header  restore in a row beneath it. Local state rather than the schema -- hiding a column is a way of looking at the data  not a change to it.
+DB-BOARD-0001,db-view-board,T1,Board view grouped by select or status,HINT,DONE,apps/desktop/src/renderer/table.tsx,Board view groups by the active property.
+DB-LIST-0001,db-view-list,T1,List view,HINT,DONE,apps/desktop/src/renderer/table.tsx;tests/e2e/db-views.spec.ts,One line per row  skipping empty cells so a half-filled row reads as two columns rather than five with noise.
+DB-GALLERY-0001,db-view-gallery,T1,Gallery view,HINT,DONE,apps/desktop/src/renderer/table.tsx;tests/e2e/db-views.spec.ts,Auto-fill card grid with a property preview as the cover. An empty cover keeps the card height so the grid stays a grid.
+DB-CAL-0001,db-view-calendar,T2,Calendar view,HINT,TODO,,
+DB-TIME-0001,db-view-timeline,T2,Timeline view,HINT,TODO,,
+DB-CHART-0001,db-view-chart,T3,Chart view,HINT,TODO,,
+DB-PROP-0001,db-props,T1,Title and text properties,HINT,DONE,packages/commands/src/view-query.ts;tests/parity/view-query.test.ts,Title and text properties tested.
+DB-PROP-0002,db-props,T1,Number property with formats,HINT,DONE,packages/commands/src/view-query.ts;tests/parity/view-query.test.ts,Numbers compare numerically not as strings.
+DB-PROP-0003,db-props,T1,Select and multi-select,HINT,DONE,packages/commands/src/view-query.ts;tests/parity/view-query.test.ts,Select matches by option id; multi-select searched whole.
+DB-PROP-0011,db-props,T1,Status property with grouped options,HINT,DONE,packages/commands/src/view-query.ts;tests/parity/view-query.test.ts,Status is a select; grouping emits a column per option.
+DB-PROP-0012,db-props,T1,Date property,HINT,DONE,packages/commands/src/view-query.ts;tests/parity/view-query.test.ts,ISO dates compare correctly; humanised only for display.
+DB-PROP-0013,db-props,T1,Checkbox property,HINT,DONE,apps/desktop/src/renderer/table.tsx;packages/commands/src/view-query.ts;tests/parity/view-query.test.ts,Checkbox operators tested; cell renders a checkbox.
+DB-PROP-0014,db-props,T1,Person and files properties,HINT,DONE,packages/storage/src/databases.ts;packages/commands/src/database-commands.ts;apps/desktop/src/renderer/table.tsx;tests/parity/person-files.test.ts;tests/e2e/person-files.spec.ts,A person property holds ids into a local people directory and draws names; a files property holds references  not bytes. People are local because there are no accounts  and adding the same name twice gives the same person rather than a second one to choose between.
+DB-PROP-0020,db-props,T2,Formula property,HINT,TODO,,
+DB-PROP-0021,db-props,T2,Relation and rollup,HINT,TODO,,
+DB-FILT-0040,db-filter,T2,Nested AND and OR filter groups,HINT,TODO,,
+DB-FORM-0050,db-formula,T2,Formula language with a hand written parser,HINT,TODO,,
+SEARCH-0001,search,T1,Quick find over titles and body,HINT,DONE,packages/storage/test/storage.test.ts,
+SEARCH-0002,search,T1,Ranking exact title above prefix above substring above body,HINT,DONE,packages/storage/src/repository.ts,Repository.search;
+SEARCH-0003,search,T1,Recently opened boost,HINT,DONE,packages/storage/test/storage.test.ts,
+SEARCH-0004,search,T1,Punctuation in a query is literal not FTS syntax,HINT,DONE,packages/storage/test/storage.test.ts,
+SEARCH-0005,search,T1,Search excludes trashed pages,HINT,DONE,packages/storage/test/storage.test.ts,
+SEARCH-0006,search,T2,Command palette over the registry,HINT,DONE,packages/commands/src/registry.ts,Registry.search;
+SEARCH-0007,search,T2,In page find,HINT,TODO,,
+SETTINGS-0001,settings,T1,Theme light dark and system,HINT,DONE,apps/desktop/src/renderer/preferences.ts;tests/parity/preferences.test.ts;tests/e2e/settings.spec.ts,Theme is light by default with system and dark as explicit choices.
+SETTINGS-0002,settings,T1,Interface text size,HINT,DONE,apps/desktop/src/renderer/preferences.ts;tests/parity/preferences.test.ts;tests/e2e/settings.spec.ts,Three steps driving --ow-scale on the page body.
+SETTINGS-0003,settings,T1,Accent colour,HINT,DONE,apps/desktop/src/renderer/preferences.ts;tests/parity/preferences.test.ts;tests/e2e/settings.spec.ts,Five validated accents. A free picker would allow an unreadable one.
+SETTINGS-0004,settings,T1,Content width,HINT,DONE,apps/desktop/src/renderer/preferences.ts;tests/parity/preferences.test.ts;tests/e2e/settings.spec.ts,Four measures rather than a pixel field.
+SETTINGS-0005,settings,T1,Zoom with reset,HINT,DONE,apps/desktop/src/renderer/preferences.ts;tests/parity/preferences.test.ts;tests/e2e/settings.spec.ts,Stepper with a reset. Zoom multiplies the root font size so text stays crisp.
+SETTINGS-0006,settings,T1,Settings persist across restarts,HINT,DONE,apps/desktop/src/renderer/preferences.ts;tests/parity/preferences.test.ts;tests/e2e/settings.spec.ts,e2e restarts the window and re-reads the pressed controls.
+SETTINGS-0007,settings,T2,Keyboard shortcut customisation,HINT,TODO,,
+SHORTCUTS-0001,shortcuts,T1,One keybinding map shared by menus and shortcuts,HINT,DONE,packages/commands/src/registry.ts,
+SHORTCUTS-0002,shortcuts,T1,Conflict detection over the binding table,HINT,DONE,packages/commands/src/registry.ts,Registry.keyConflicts;
+SHORTCUTS-0003,shortcuts,T2,Shortcuts cheat sheet,HINT,DONE,apps/desktop/src/main/index.ts;apps/desktop/src/renderer/App.tsx;tests/e2e/shortcut-sheet.spec.ts,Generated from registry.all() filtered to commands that carry keys  so a row cannot exist for a chord with no command behind it. Grouped by category; both platform spellings shown.
+PERSIST-0001,perf,T1,SQLite persistence in WAL mode,HINT,DONE,packages/storage/test/storage.test.ts,
+PERSIST-0002,perf,T1,Forward only numbered migrations,HINT,DONE,packages/storage/test/storage.test.ts,
+PERSIST-0003,perf,T1,Migration is idempotent on reopen,HINT,DONE,packages/storage/test/storage.test.ts,
+PERSIST-0004,perf,T1,Search index written in the same transaction as the data,HINT,DONE,packages/storage/src/repository.ts,Repository.savePage;
+PERSIST-0005,perf,T1,Autosave debounced and never blocking on disk,HINT,DONE,packages/commands/src/session.ts,Session autosave;
+PERSIST-0006,perf,T1,Startup integrity self test repairs orphaned blocks,HINT,DONE,packages/storage/test/storage.test.ts,
+PERSIST-0007,perf,T1,Append only op log for future sync,HINT,DONE,packages/storage/src/repository.ts;packages/commands/src/index.ts;tests/parity/op-log.test.ts,runCommand is the single funnel for every mutation  so the append happens there after the flush -- the log can never claim a change the database does not have. Only undoable commands: logging page.open or history.undo would make a replay re-apply a navigation  or re-apply an undo as a change of mind. The test asserts a byte-identical prefix  which a row count would not catch.
+PERSIST-0008,perf,T2,Crash recovery scenario test,HINT,DONE,tests/e2e/crash-recovery.spec.ts,Hard process kill (taskkill /F /T) mid-typing  not a graceful close  because a graceful close flushes and proves nothing. Asserts three things: the tree is still valid  the surviving text is a prefix of what was typed (a gap in the middle would mean the write interleaved with the typing)  and the loss is bounded at the tail.
+AGENT-0001,agent-iface,T1,ow run executes a command batch headlessly,HINT,DONE,tests/parity/slice-1.test.ts,
+AGENT-0002,agent-iface,T1,ow inspect returns the page structure,HINT,DONE,apps/cli/src/ow.ts,
+AGENT-0003,agent-iface,T1,ow list-commands prints the registry,HINT,DONE,apps/cli/src/ow.ts,
+AGENT-0004,agent-iface,T1,ow run loads a batch from a JSON script file,HINT,DONE,apps/cli/src/ow.ts,
+AGENT-0005,agent-iface,T1,ow check runs the integrity self test,HINT,DONE,apps/cli/src/ow.ts,
+AGENT-0006,agent-iface,T2,JSON control channel over a loopback socket,HINT,TODO,,
+AGENT-0007,agent-iface,T2,MCP server,HINT,TODO,,
+PARITY-0001,agent-iface,T1,Ledger is the source of truth for status,HINT,DONE,tools/xtask/parity-report.mjs,
+PARITY-0002,agent-iface,T1,DONE without an existing proof path is downgraded,HINT,DONE,tools/xtask/parity-report.mjs,
+LAYER-0001,agent-iface,T1,Layering rules enforced by a script,HINT,DONE,tools/xtask/layering.mjs,
+LAYER-0002,agent-iface,T1,Attribution checked by a script,HINT,DONE,tools/xtask/attribution.mjs,
+UI-0001,blocks,T1,Block type registry drives renderers,HINT,DONE,packages/model/src/registry.ts,
+UI-0002,blocks,T1,Drag and drop of blocks with a drop indicator,HINT,DONE,apps/desktop/src/renderer/editor.tsx;packages/commands/src/builtin.ts;tests/e2e/block-drag.spec.ts,block.moveTo plus a rule drawn on the hovered block. Only the top and bottom quarters move; the middle would nest by accident.
+UI-0003,blocks,T1,Slash menu anchored to the caret,HINT,DONE,apps/desktop/src/renderer/editor.tsx;tests/e2e/slash-menu.spec.ts,Menu is fixed to a measured caret rect and flips above when there is no room below. The e2e asserts the geometry  not just that it appears.
+UI-0004,blocks,T2,Columns with resize handles,HINT,TODO,,
+UI-0005,blocks,T2,Table block with row and column handles,HINT,TODO,,
+UI-0006,blocks,T2,Images and files as content addressed assets,HINT,TODO,,
+UI-0007,blocks,T2,Code block with language and highlighting,HINT,TODO,,
+UI-0008,blocks,T2,Equations,HINT,DONE,packages/model/src/latex.ts;packages/ui-kit/src/math.tsx;packages/commands/src/builtin.ts;apps/desktop/src/renderer/editor.tsx;tests/parity/inline-rules.test.ts;tests/e2e/inline-syntaxes.spec.ts,An equation is drawn as an equation: a small LaTeX parser in the model  a renderer in the ui-kit  and the text of an equation is the text as it is drawn so the screen and the model agree. Wiki links  tags and callouts came with it -- the same inline rule mechanism.
+UI-0009,blocks,T2,Table of contents,HINT,DONE,apps/desktop/src/renderer/editor.tsx;tests/e2e/toc-and-move.spec.ts,The toc block type has been in the registry since the first release and rendered as an ordinary paragraph. Entries are buttons that scroll  not href anchors  which would break on export.
+SHELL-0001,shell,T1,Single instance app,HINT,DONE,apps/desktop/src/main/index.ts,
+SHELL-0002,shell,T1,Window state persistence,HINT,DONE,apps/desktop/src/main/index.ts,Bounds saved on close and restored on launch. A saved position off every attached display falls back to size-only rather than opening unreachable -- a window dragged onto a monitor that is no longer attached is reported as 'the app won't start'.
+SHELL-0003,shell,T1,Context isolation sandboxed and no node integration,HINT,DONE,apps/desktop/src/main/index.ts,
+SHELL-0004,shell,T1,No network request at runtime,HINT,DONE,packages/storage/src/repository.ts,The repository has no HTTP client and the product makes no request
+SHELL-0005,shell,T2,Loading placeholder instead of a blank window,HINT,TODO,,
+SHELL-0006,shell,T2,Activity monitor and database inspector panels,HINT,TODO,,
+SHELL-0007,shell,T2,Deep links with an own scheme,HINT,TODO,,
+PKG-0001,packaging,T1,Installer wizard with a licence page and directory choice,operator-requirement,DONE,apps/desktop/package.json;docs/packaging-notes.md;docs/images/installer-licence.png,Verified by installing  not by building. The NSIS installer shows the licence page (screenshot in docs/images)  is assisted rather than one-click  offers a directory choice  installs to a chosen path  creates desktop and Start-menu shortcuts  and the packaged Openfield.exe launches. Uninstaller present.
+PKG-0002,packaging,T1,Shortcut creation options,HINT,TODO,,
+PKG-0003,packaging,T2,Portable zip build,HINT,DONE,apps/desktop/package.json,The zip target was configured but never built. A zip and a portable single-exe build are both produced now  and the archive was opened and checked to contain the whole app -- 113 entries including the executable -- rather than assumed to.
+A11Y-0001,a11y,T1,Every control reachable by keyboard,HINT,DONE,apps/desktop/src/renderer/App.tsx;tests/e2e/sidebar-a11y.spec.ts,e2e asserts nothing clickable-looking in the sidebar is a div  and every button carries a name. The grip is a focusable separator with arrow keys.
+A11Y-0002,a11y,T1,Correct ARIA roles for the sidebar tree and menus,HINT,DONE,apps/desktop/src/renderer/App.tsx;tests/e2e/sidebar-a11y.spec.ts,Pages is role
+A11Y-0003,a11y,T1,WCAG AA contrast in both themes,HINT,DONE,tools/check-contrast.mjs,
+A11Y-0004,a11y,T2,IME composition in all text blocks,HINT,TODO,,

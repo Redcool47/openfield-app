@@ -1,0 +1,446 @@
+<!doctype html>
+<html lang="en" data-resolution="landscape">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1920, height=1080" />
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/gsap.min.js"></script>
+    <style>
+      /*
+       * The film is live footage: seven clips recorded from the running desktop
+       * app (trailer/record.mjs), cut back to back inside the window box. The
+       * wash, captions and drawn pointer are the only things added, so what is
+       * seen between the wash and the app is the product itself.
+       */
+      :root {
+        --ink: #14161c;
+        --muted: #5b6172;
+        --pill: rgba(16, 18, 24, 0.93);
+        --font: system-ui, -apple-system, "Segoe UI", sans-serif;
+      }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        width: 1920px;
+        height: 1080px;
+        overflow: hidden;
+        background: #dbe4f8;
+        font-family: var(--font);
+        -webkit-font-smoothing: antialiased;
+      }
+      #root {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+      }
+
+      /* --- the wash -------------------------------------------------------- */
+      #washwrap {
+        position: absolute;
+        inset: -4%;
+        width: 108%;
+        height: 108%;
+        z-index: 0;
+      }
+      .wash {
+        position: absolute;
+        inset: 0;
+        opacity: 0;
+        background: linear-gradient(115deg, var(--w-a) 0%, var(--w-b) 55%, var(--w-c) 100%);
+      }
+      /* Four palettes reused across the cuts. Pastel, low contrast, no grain:
+         the recording has to be the sharpest thing in the frame. */
+      #wash-1 {
+        --w-a: #b9cdf2;
+        --w-b: #cdd4f6;
+        --w-c: #dcc9f0;
+        opacity: 1;
+      }
+      #wash-2 {
+        --w-a: #cbb8ec;
+        --w-b: #e3bcd6;
+        --w-c: #f4c9cf;
+      }
+      #wash-3 {
+        --w-a: #b7dbe8;
+        --w-b: #c6d6f2;
+        --w-c: #d9c6ee;
+      }
+      #wash-4 {
+        --w-a: #f6cfae;
+        --w-b: #f3bfb6;
+        --w-c: #dbbde2;
+      }
+
+      /* --- the window ------------------------------------------------------ */
+      /*
+       * One timed clip per shot, each holding a video already the exact size of
+       * the window box: 1440x853 recorded pixels, placed 1:1 in the frame.
+       * `object-fit: fill` is honest at exactly 1:1 and keeps the sidebar's
+       * left edge, which is where the workspace name is.
+       */
+      .shot {
+        position: absolute;
+        left: 240px;
+        top: 115px;
+        right: auto;
+        bottom: auto;
+        width: 1440px;
+        height: 853px;
+        object-fit: fill;
+        display: block;
+        background: #fff;
+        border-radius: 14px;
+        box-shadow:
+          0 48px 90px -28px rgba(20, 26, 48, 0.42),
+          0 14px 32px rgba(20, 26, 48, 0.14),
+          0 0 0 1px rgba(20, 26, 48, 0.07);
+        z-index: 2;
+      }
+
+      /* --- captions -------------------------------------------------------- */
+      .pill {
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 40px;
+        margin: 0 auto;
+        width: max-content;
+        max-width: 1560px;
+        padding: 14px 32px;
+        border-radius: 999px;
+        background: var(--pill);
+        color: #fff;
+        font-size: 30px;
+        font-weight: 500;
+        letter-spacing: -0.012em;
+        white-space: nowrap;
+        text-align: center;
+        opacity: 0;
+        box-shadow: 0 16px 34px -16px rgba(12, 14, 20, 0.55);
+        z-index: 5;
+      }
+
+      /* --- cursor ---------------------------------------------------------- */
+      .cursor {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 34px;
+        height: 47px;
+        opacity: 0;
+        filter: drop-shadow(0 5px 8px rgba(12, 14, 20, 0.4));
+        z-index: 6;
+      }
+      .cursor svg {
+        display: block;
+        width: 34px;
+        height: 47px;
+      }
+
+      /* --- the intro card and the close ------------------------------------ */
+      .card {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        z-index: 7;
+      }
+      /*
+       * The intro is a card, not a title sequence: it names the product once and
+       * gets out of the way in under two seconds. The small size is deliberate —
+       * the close is the loud one.
+       */
+      #intro-card {
+        position: absolute;
+        left: 600px;
+        top: 380px;
+        width: 720px;
+        height: 300px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        border-radius: 22px;
+        background: rgba(255, 255, 255, 0.93);
+        box-shadow:
+          0 40px 80px -24px rgba(20, 26, 48, 0.34),
+          0 10px 26px rgba(20, 26, 48, 0.1),
+          0 0 0 1px rgba(20, 26, 48, 0.06);
+        opacity: 1;
+        z-index: 7;
+      }
+      .wordmark {
+        font-size: 128px;
+        font-weight: 640;
+        letter-spacing: -0.045em;
+        color: var(--ink);
+      }
+      #intro-word {
+        font-size: 92px;
+      }
+      .tagline {
+        margin-top: 16px;
+        font-size: 33px;
+        font-weight: 400;
+        letter-spacing: -0.01em;
+        color: var(--muted);
+      }
+      .rule {
+        width: 92px;
+        height: 3px;
+        margin-top: 32px;
+        border-radius: 2px;
+        background: linear-gradient(90deg, #2f6fed, #a06be0);
+      }
+      #intro-rule {
+        width: 64px;
+        margin-top: 24px;
+      }
+      .fine {
+        margin-top: 24px;
+        font-size: 28px;
+        font-weight: 500;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: var(--muted);
+      }
+      #outro-word,
+      #outro-tag,
+      #outro-rule,
+      #outro-fine {
+        opacity: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <div data-hf-id="hf-me1s" id="root" data-composition-id="main" data-start="0" data-duration="28.475" data-width="1920" data-height="1080">
+      <!-- untimed: the wash is behind everything for the whole film -->
+      <div data-hf-id="hf-clks" id="washwrap">
+        <div data-hf-id="hf-t2rc" class="wash" id="wash-1"></div>
+        <div data-hf-id="hf-1qn7" class="wash" id="wash-2"></div>
+        <div data-hf-id="hf-xsj6" class="wash" id="wash-3"></div>
+        <div data-hf-id="hf-f0th" class="wash" id="wash-4"></div>
+      </div>
+
+      <!--
+        The seven shots. Starts run end to end: 2.2 + 5.586 + 2.419 + 3.663 +
+        2.513 + 4.225 + 1.659 + 2.81 = 25.075. Each video is the cut piece written
+        by record.mjs, played from its first frame, never trimmed inside the film.
+      -->
+      <video data-hf-id="hf-whyn" class="clip shot" id="shot-1" src="shots/shot-1.mp4" muted preload="auto" data-start="2.2" data-duration="5.586" data-media-start="0" data-track-index="1"></video>
+      <video data-hf-id="hf-344v" class="clip shot" id="shot-2" src="shots/shot-2.mp4" muted preload="auto" data-start="7.786" data-duration="2.419" data-media-start="0" data-track-index="1"></video>
+      <video data-hf-id="hf-63wp" class="clip shot" id="shot-3" src="shots/shot-3.mp4" muted preload="auto" data-start="10.205" data-duration="3.663" data-media-start="0" data-track-index="1"></video>
+      <video data-hf-id="hf-zj5t" class="clip shot" id="shot-4" src="shots/shot-4.mp4" muted preload="auto" data-start="13.868" data-duration="2.513" data-media-start="0" data-track-index="1"></video>
+      <video data-hf-id="hf-scrv" class="clip shot" id="shot-5" src="shots/shot-5.mp4" muted preload="auto" data-start="16.381" data-duration="4.225" data-media-start="0" data-track-index="1"></video>
+      <video data-hf-id="hf-g5ow" class="clip shot" id="shot-6" src="shots/shot-6.mp4" muted preload="auto" data-start="20.606" data-duration="1.659" data-media-start="0" data-track-index="1"></video>
+      <video data-hf-id="hf-p4qd" class="clip shot" id="shot-7" src="shots/shot-7.mp4" muted preload="auto" data-start="22.265" data-duration="2.81" data-media-start="0" data-track-index="1"></video>
+
+      <!-- captions -->
+      <div data-hf-id="hf-rzty" class="clip" id="cap-1-clip" data-start="2.4" data-duration="5.3" data-track-index="2">
+        <div data-hf-id="hf-xi5t" class="pill" id="cap-1">Make a page, then type into it</div>
+      </div>
+      <div data-hf-id="hf-lbxa" class="clip" id="cap-2-clip" data-start="7.76" data-duration="2.14" data-track-index="2">
+        <div data-hf-id="hf-4zr8" class="pill" id="cap-2">Colour any line</div>
+      </div>
+      <div data-hf-id="hf-ya0e" class="clip" id="cap-3-clip" data-start="10.3" data-duration="3.45" data-track-index="2">
+        <div data-hf-id="hf-06gf" class="pill" id="cap-3">Type a slash and the blocks come to you</div>
+      </div>
+      <div data-hf-id="hf-ad1j" class="clip" id="cap-4-clip" data-start="13.96" data-duration="2.34" data-track-index="2">
+        <div data-hf-id="hf-13ie" class="pill" id="cap-4">Every page carries its own typeface</div>
+      </div>
+      <div data-hf-id="hf-6xbg" class="clip" id="cap-5-clip" data-start="16.6" data-duration="3.9" data-track-index="2">
+        <div data-hf-id="hf-6nm7" class="pill" id="cap-5">Databases are pages too</div>
+      </div>
+      <div data-hf-id="hf-mr4a" class="clip" id="cap-6-clip" data-start="20.65" data-duration="1.55" data-track-index="2">
+        <div data-hf-id="hf-0860" class="pill" id="cap-6">Rows as a board</div>
+      </div>
+      <div data-hf-id="hf-9wnt" class="clip" id="cap-7-clip" data-start="22.4" data-duration="2.55" data-track-index="2">
+        <div data-hf-id="hf-2vle" class="pill" id="cap-7">Find any page by typing its name</div>
+      </div>
+
+      <!-- the pointer, aimed from the cue list record.mjs wrote -->
+      <div data-hf-id="hf-l104" class="clip" id="beat-cursor" data-start="2.2" data-duration="18.85" data-track-index="3">
+        <div data-hf-id="hf-c0g2" class="cursor" id="cursor">
+          <svg data-hf-id="hf-oqgd" viewBox="0 0 30 42" fill="none" aria-hidden="true">
+            <path data-hf-id="hf-gy0h"
+              d="M2 2 L2 30 L9.5 23.5 L14 35 L19 33 L14.5 21.8 L24 21.4 Z"
+              fill="#ffffff"
+              stroke="#14161c"
+              stroke-width="1.8"
+              stroke-linejoin="round"
+            />
+          </svg>
+        </div>
+      </div>
+
+      <!-- the opening card -->
+      <div data-hf-id="hf-cpq6" class="clip" id="beat-intro" data-start="0" data-duration="2.2" data-track-index="1">
+        <div data-hf-id="hf-5m8o" id="intro-card">
+          <div data-hf-id="hf-ly8e" class="wordmark" id="intro-word">Openfield</div>
+          <div data-hf-id="hf-4axd" class="rule" id="intro-rule"></div>
+        </div>
+      </div>
+
+      <!-- the closing card -->
+      <div data-hf-id="hf-6urk" class="clip" id="beat-outro" data-start="25.075" data-duration="3.4" data-track-index="0">
+        <div data-hf-id="hf-vn2y" class="card">
+          <div data-hf-id="hf-4kit" class="wordmark" id="outro-word">Openfield</div>
+          <div data-hf-id="hf-6edl" class="tagline" id="outro-tag">Notes you can read in fifty years.</div>
+          <div data-hf-id="hf-vhdc" class="rule" id="outro-rule"></div>
+          <div data-hf-id="hf-as2o" class="fine" id="outro-fine">MIT licensed · local-first · offline</div>
+        </div>
+      </div>
+
+      <!--
+        Sound. One element per cue, because one <audio> cannot be scheduled
+        twice. Clicks land on the cue times logged by the recorder, so the sound
+        and the drawn pointer are the same instant as the real one.
+      -->
+      <audio data-hf-id="hf-gcv7" id="click-1" src="sfx/click-soft.mp3" data-start="2.216" data-duration="0.4" data-track-index="9" data-volume="1.35"></audio>
+      <audio data-hf-id="hf-tc8z" id="click-2" src="sfx/click-soft.mp3" data-start="8.263" data-duration="0.4" data-track-index="9" data-volume="1.35"></audio>
+      <audio data-hf-id="hf-wrvx" id="click-3" src="sfx/click-soft.mp3" data-start="8.748" data-duration="0.4" data-track-index="9" data-volume="1.35"></audio>
+      <audio data-hf-id="hf-m7jm" id="click-4" src="sfx/click-soft.mp3" data-start="13.879" data-duration="0.4" data-track-index="9" data-volume="1.35"></audio>
+      <audio data-hf-id="hf-tbeb" id="click-5" src="sfx/click-soft.mp3" data-start="14.410" data-duration="0.4" data-track-index="9" data-volume="1.35"></audio>
+      <audio data-hf-id="hf-49sb" id="click-6" src="sfx/click-soft.mp3" data-start="16.401" data-duration="0.4" data-track-index="9" data-volume="1.35"></audio>
+      <audio data-hf-id="hf-mylv" id="click-7" src="sfx/click-soft.mp3" data-start="17.264" data-duration="0.4" data-track-index="9" data-volume="1.35"></audio>
+      <audio data-hf-id="hf-5sob" id="click-8" src="sfx/click-soft.mp3" data-start="18.220" data-duration="0.4" data-track-index="9" data-volume="1.35"></audio>
+      <audio data-hf-id="hf-mbmw" id="click-9" src="sfx/click-soft.mp3" data-start="20.617" data-duration="0.4" data-track-index="9" data-volume="1.35"></audio>
+
+      <!-- One whoosh per cut. It is the edit point, not an event in the app. -->
+      <audio data-hf-id="hf-oyr4" id="whoosh-1" src="sfx/whoosh-short.mp3" data-start="2.2" data-duration="0.6" data-track-index="10" data-volume="0.8"></audio>
+      <audio data-hf-id="hf-nocx" id="whoosh-2" src="sfx/whoosh-short.mp3" data-start="7.786" data-duration="0.6" data-track-index="10" data-volume="0.5"></audio>
+      <audio data-hf-id="hf-sv27" id="whoosh-3" src="sfx/whoosh-short.mp3" data-start="10.205" data-duration="0.6" data-track-index="10" data-volume="0.5"></audio>
+      <audio data-hf-id="hf-a0a2" id="whoosh-4" src="sfx/whoosh-short.mp3" data-start="13.868" data-duration="0.6" data-track-index="10" data-volume="0.5"></audio>
+      <audio data-hf-id="hf-6l0x" id="whoosh-5" src="sfx/whoosh-short.mp3" data-start="16.381" data-duration="0.6" data-track-index="10" data-volume="0.5"></audio>
+      <audio data-hf-id="hf-c8vx" id="whoosh-6" src="sfx/whoosh-short.mp3" data-start="20.606" data-duration="0.6" data-track-index="10" data-volume="0.5"></audio>
+      <audio data-hf-id="hf-7pje" id="whoosh-7" src="sfx/whoosh-short.mp3" data-start="22.265" data-duration="0.6" data-track-index="10" data-volume="0.5"></audio>
+      <audio data-hf-id="hf-9381" id="whoosh-8" src="sfx/whoosh-short.mp3" data-start="25.075" data-duration="0.6" data-track-index="10" data-volume="0.8"></audio>
+
+      <audio data-hf-id="hf-4nh2" id="chime" src="sfx/chime.mp3" data-start="25.30" data-duration="2.5" data-track-index="11" data-volume="0.66"></audio>
+    </div>
+
+    <script>
+      window.__timelines = window.__timelines || {};
+      const tl = gsap.timeline({ paused: true });
+      const TOTAL = 28.475;
+
+      // --- the wash ---------------------------------------------------------
+      // Cross-faded, never stacked: at any moment one palette is opaque and the
+      // rest are clear, so a dissolve reads as the background changing hue.
+      const WASHES = ['#wash-1', '#wash-2', '#wash-3', '#wash-4'];
+      const wash = (keep, at) => {
+        for (const other of WASHES) {
+          if (other !== keep) tl.to(other, { opacity: 0, duration: 0.8, ease: 'power2.inOut' }, at);
+        }
+        tl.to(keep, { opacity: 1, duration: 0.8, ease: 'power2.inOut' }, at);
+      };
+      // A slow push on the whole wash keeps a held frame from looking frozen.
+      tl.fromTo('#washwrap', { scale: 1 }, { scale: 1.045, duration: TOTAL, ease: 'none' }, 0);
+
+      wash('#wash-2', 2.2);
+      wash('#wash-3', 7.786);
+      wash('#wash-2', 10.205);
+      wash('#wash-4', 13.868);
+      wash('#wash-1', 16.381);
+      wash('#wash-3', 20.606);
+      wash('#wash-2', 22.265);
+      wash('#wash-4', 25.075);
+
+      // --- the opening card -------------------------------------------------
+      // Visible at frame 0: the first frame is the thumbnail on a social player,
+      // so the name is already there rather than sliding in from nothing.
+      tl.fromTo('#intro-card', { y: 16, scale: 0.99 }, { y: 0, scale: 1, duration: 0.55, ease: 'power3.out' }, 0);
+      tl.fromTo('#intro-word', { y: 12 }, { y: 0, duration: 0.5, ease: 'power2.out' }, 0.08);
+      tl.fromTo('#intro-rule', { opacity: 0, scaleX: 0 }, { opacity: 1, scaleX: 1, duration: 0.45, ease: 'power3.out' }, 0.5);
+      tl.to('#intro-card', { opacity: 0, y: -12, scale: 1.01, duration: 0.34, ease: 'power2.in' }, 1.86);
+
+      // --- the close --------------------------------------------------------
+      tl.fromTo('#outro-word', { opacity: 0, y: 22 }, { opacity: 1, y: 0, duration: 0.7, ease: 'power3.out' }, 25.18);
+      tl.fromTo('#outro-tag', { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.6, ease: 'power2.out' }, 25.58);
+      tl.fromTo('#outro-rule', { opacity: 0, scaleX: 0 }, { opacity: 1, scaleX: 1, duration: 0.55, ease: 'power3.out' }, 25.83);
+      tl.fromTo('#outro-fine', { opacity: 0 }, { opacity: 1, duration: 0.6, ease: 'power2.out' }, 26.08);
+
+      // --- captions ---------------------------------------------------------
+      // In fast, out fast: a caption that lingers into the next cut reads as a
+      // title rather than as a subtitle.
+      const cap = (id, at, out) => {
+        tl.fromTo(id, { opacity: 0, y: 8 }, { opacity: 1, y: 0, duration: 0.24, ease: 'power2.out' }, at);
+        tl.to(id, { opacity: 0, y: -6, duration: 0.2, ease: 'power2.in' }, out);
+      };
+      cap('#cap-1', 2.5, 7.5);
+      cap('#cap-2', 7.86, 9.7);
+      cap('#cap-3', 10.4, 13.55);
+      cap('#cap-4', 14.06, 16.1);
+      cap('#cap-5', 16.7, 20.3);
+      cap('#cap-6', 20.75, 22.0);
+      cap('#cap-7', 22.5, 24.75);
+
+      // --- the pointer ------------------------------------------------------
+      // Coordinates come from shots.json, which the recorder wrote from the same
+      // clock as the click itself. `-2` puts the arrow's tip, not its corner, on
+      // the control. It leaves the frame while a shot is only typing: a cursor
+      // parked over text that is being typed reads as a rendering mistake.
+      const arrow = '#cursor';
+      const show = (opacity, at, duration = 0.14) =>
+        tl.to(arrow, { opacity, duration, ease: 'none' }, at);
+      const place = (x, y, at) => tl.set(arrow, { x: x - 2, y: y - 2 }, at);
+      const move = (x, y, at, duration) =>
+        tl.to(arrow, { x: x - 2, y: y - 2, duration, ease: 'power2.inOut' }, at);
+      const click = (at) =>
+        tl.fromTo(arrow, { scale: 1 }, { scale: 0.88, duration: 0.07, ease: 'power2.out', yoyo: true, repeat: 1 }, at);
+
+      // Shot 1: New page, then typing.
+      place(370, 917, 2.2);
+      show(1, 2.2, 0.1);
+      click(2.216);
+      show(0, 2.62, 0.22);
+
+      // Shot 2: open the colour picker, pick the yellow fill.
+      place(1186, 349, 7.786);
+      show(1, 7.786, 0.1);
+      click(8.263);
+      move(1083, 409, 8.28, 0.32);
+      click(8.748);
+      show(0, 8.95, 0.2);
+
+      // Shot 3: slash menu, typed. No pointer.
+
+      // Shot 4: page options, then the serif face.
+      place(1656, 137, 13.868);
+      show(1, 13.868, 0.1);
+      click(13.879);
+      move(1567, 320, 13.98, 0.32);
+      click(14.410);
+      show(0, 15.1, 0.24);
+
+      // Shot 5: open the database, add a row, name it.
+      place(360, 436, 16.381);
+      show(1, 16.381, 0.1);
+      click(16.401);
+      move(587, 574, 16.78, 0.34);
+      click(17.264);
+      move(681, 572, 17.35, 0.34);
+      click(18.220);
+      show(0, 18.55, 0.22);
+
+      // Shot 6: the board view.
+      place(644, 265, 20.606);
+      show(1, 20.606, 0.1);
+      click(20.617);
+      show(0, 21.05, 0.22);
+
+      // Shot 7: quick find, keyboard only. No pointer.
+
+      window.__timelines['main'] = tl;
+      tl.seek(0);
+    </script>
+  </body>
+</html>

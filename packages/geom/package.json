@@ -1,0 +1,10 @@
+{
+  "name": "@ow/geom",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "L0. Pure primitives: time-sortable ids, fractional ordering, colour math.",
+  "exports": {
+    ".": "./src/index.ts"
+  }
+}

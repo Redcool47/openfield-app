@@ -1,0 +1,11 @@
+[
+  { "id": "block.insert", "args": { "type": "heading1", "text": "Reading list" } },
+  { "id": "block.insert", "args": { "type": "paragraph", "text": "Books and articles to get through." } },
+  { "id": "block.insert", "args": { "type": "bulletedListItem", "text": "The Design of Everyday Things" } },
+  { "id": "block.insert", "args": { "type": "bulletedListItem", "text": "Thinking in Systems" } },
+  { "id": "block.insert", "args": { "type": "todo", "text": "Finish the systems book" } },
+  { "id": "block.insert", "args": { "type": "quote", "text": "Simplicity is prerequisite for reliability." } },
+  { "id": "block.insert", "args": { "type": "code", "text": "const answer = 42;", "language": "ts" } },
+  { "id": "block.insert", "args": { "type": "divider", "text": "" } },
+  { "id": "block.insert", "args": { "type": "paragraph", "text": "Reviewed 2026-10-17." } }
+]

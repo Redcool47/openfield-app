@@ -1,0 +1,16 @@
+{
+  "name": "@ow/ui-kit",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "L5. Tokens-driven primitives: menu, popover, tooltip, modal, toast, icons.",
+  "dependencies": {
+    "@ow/model": "0.1.0"
+  },
+  "exports": {
+    ".": "./src/index.ts",
+    "./tokens.css": "./src/tokens.css",
+    "./base.css": "./src/base.css",
+    "./components.css": "./src/components.css"
+  }
+}

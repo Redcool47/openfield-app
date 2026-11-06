@@ -1,0 +1,256 @@
+/**
+ * Component styles.
+ *
+ * Every colour, size and duration comes from a token. There are no literal
+ * values here on purpose: the whole point of the generated token layer is that a
+ * component cannot quietly disagree with the design system.
+ */
+
+.ow-menu {
+  position: fixed;
+  z-index: 60;
+  min-width: 220px;
+  max-width: 340px;
+  max-height: 70vh;
+  overflow-y: auto;
+  padding: var(--ow-space-1);
+  background: var(--ow-bg-overlay);
+  border-radius: var(--ow-radius-md);
+  box-shadow: var(--ow-elevation-popover);
+  animation: ow-menu-in var(--ow-motion-normal-duration) var(--ow-motion-normal-easing);
+}
+
+@keyframes ow-menu-in {
+  from {
+    opacity: 0;
+    transform: translateY(-2px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.ow-menu-group {
+  padding: var(--ow-space-3) var(--ow-space-2) var(--ow-space-1);
+  color: var(--ow-text-faint);
+  font-size: var(--ow-type-menu-group);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.ow-menu-item {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--ow-space-2);
+  width: 100%;
+  padding: var(--ow-space-2);
+  border-radius: var(--ow-radius-sm);
+  text-align: left;
+  color: var(--ow-text);
+  transition: background-color var(--ow-motion-fast-duration) var(--ow-motion-fast-easing);
+}
+
+.ow-menu-item[data-active]:not(:disabled) {
+  background: var(--ow-bg-hover);
+}
+
+.ow-menu-icon {
+  flex: 0 0 auto;
+  margin-top: 2px;
+  color: var(--ow-text-muted);
+}
+
+.ow-menu-item[data-active] .ow-menu-icon {
+  color: var(--ow-text);
+}
+
+.ow-menu-text {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 0;
+  flex: 1 1 auto;
+}
+
+.ow-menu-label {
+  font-size: var(--ow-type-body-small);
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ow-menu-desc {
+  color: var(--ow-text-muted);
+  font-size: var(--ow-type-caption);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ow-menu-shortcut {
+  flex: 0 0 auto;
+  align-self: center;
+  color: var(--ow-text-faint);
+  font-size: var(--ow-type-caption);
+  font-variant-numeric: tabular-nums;
+}
+
+/**
+ * The danger style.
+ *
+ * Operator requirement R2: "Move to trash" must be reachable from the row menu
+ * without opening the page, and must be visually clear. Danger red plus a
+ * separator above it is the clearest signal that separates it from the neutral
+ * actions, and it survives colour-blind viewing because the separation does not
+ * rely on hue alone.
+ */
+.ow-menu-item-danger {
+  color: var(--ow-danger);
+}
+
+.ow-menu-item-danger[data-active]:not(:disabled) {
+  background: color-mix(in srgb, var(--ow-danger) 10%, transparent);
+}
+
+.ow-menu-item-danger .ow-menu-icon {
+  color: var(--ow-danger);
+}
+
+.ow-menu-separator {
+  height: 1px;
+  margin: var(--ow-space-1) 0;
+  background: var(--ow-border);
+}
+
+/* ------------------------------------------------------------------ tooltip */
+
+.ow-tooltip {
+  position: fixed;
+  z-index: 70;
+  max-width: 260px;
+  padding: var(--ow-space-1) var(--ow-space-2);
+  background: var(--ow-text);
+  color: var(--ow-bg);
+  border-radius: var(--ow-radius-sm);
+  font-size: var(--ow-type-caption);
+  line-height: 1.4;
+  pointer-events: none;
+  animation: ow-fade-in var(--ow-motion-fast-duration) var(--ow-motion-fast-easing);
+}
+
+@keyframes ow-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* -------------------------------------------------------------------- modal */
+
+.ow-modal-scrim {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  display: grid;
+  place-items: center;
+  background: color-mix(in srgb, var(--ow-text) 24%, transparent);
+  animation: ow-fade-in var(--ow-motion-normal-duration) var(--ow-motion-normal-easing);
+}
+
+.ow-modal {
+  width: min(520px, calc(100vw - var(--ow-space-16)));
+  max-height: 80vh;
+  overflow-y: auto;
+  padding: var(--ow-space-6);
+  background: var(--ow-bg-overlay);
+  border-radius: var(--ow-radius-lg);
+  box-shadow: var(--ow-elevation-modal);
+  animation: ow-modal-in var(--ow-motion-slow-duration) var(--ow-motion-slow-easing);
+}
+
+@keyframes ow-modal-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.99);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.ow-modal-title {
+  margin: 0 0 var(--ow-space-4);
+  font-size: var(--ow-type-h3);
+  font-weight: 600;
+}
+
+.ow-modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--ow-space-2);
+  margin-top: var(--ow-space-6);
+}
+
+/* -------------------------------------------------------------------- toast */
+
+.ow-toasts {
+  position: fixed;
+  right: var(--ow-space-4);
+  bottom: var(--ow-space-4);
+  z-index: 90;
+  display: flex;
+  flex-direction: column;
+  gap: var(--ow-space-2);
+}
+
+.ow-toast {
+  display: flex;
+  align-items: center;
+  gap: var(--ow-space-3);
+  max-width: 420px;
+  padding: var(--ow-space-2) var(--ow-space-3);
+  background: var(--ow-text);
+  color: var(--ow-bg);
+  border-radius: var(--ow-radius-md);
+  box-shadow: var(--ow-elevation-popover);
+  font-size: var(--ow-type-body-small);
+  animation: ow-toast-in var(--ow-motion-normal-duration) var(--ow-motion-normal-easing);
+}
+
+@keyframes ow-toast-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.ow-toast-error {
+  background: var(--ow-danger);
+  color: #fff;
+}
+
+.ow-toast-action {
+  color: inherit;
+  font-weight: 600;
+  text-decoration: underline;
+}
+
+.ow-toast-close {
+  margin-left: auto;
+  color: inherit;
+  opacity: 0.6;
+}
+
+.ow-toast-close:hover {
+  opacity: 1;
+}

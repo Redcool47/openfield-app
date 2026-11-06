@@ -1,0 +1,27 @@
+Openfield
+Copyright (c) 2026 Openfield contributors
+
+This product is licensed under the MIT License. See LICENSE.
+
+Provenance
+----------
+This is a clean-room, independent implementation. It was written from public
+documentation, published standards, open-source libraries under permissive
+licenses, and observation of a third-party application's externally observable
+behaviour. No source code, markup, imagery, icon artwork, font binary, sound or
+distinctive user-interface string from any other product is included in this
+repository or in distributed builds.
+
+No endorsement by, sponsorship from, or affiliation with any vendor is claimed
+or implied. Product names of other software appear in documentation only, to
+describe file formats and workflows that this project is compatible with.
+
+Third-party dependencies
+------------------------
+Every runtime and build dependency, with its licence and upstream URL, is
+listed in THIRD_PARTY_NOTICES.md. Bundled artwork and fonts, with author,
+source and licence, are listed in ATTRIBUTION.md.
+
+The reference analysis material (a third-party desktop build) is NOT part of
+this repository, is never redistributed, and is excluded by .gitignore. Only
+derived, original interface notes and evidence identifiers are committed.

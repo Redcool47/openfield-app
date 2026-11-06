@@ -1,0 +1,53 @@
+name: Bug report
+description: Something in Openfield does not do what it says
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for the report. Please do not paste real notes, real account
+        data or a workspace you care about — the bug can be reproduced with a
+        fresh one.
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened
+      description: What you did, what you expected, what you got.
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. ow init ./demo
+        2. ...
+        3. ...
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Version
+      description: From `package.json`, or the installer filename.
+    validations:
+      required: true
+  - type: dropdown
+    id: surface
+    attributes:
+      label: Where
+      options:
+        - Desktop app
+        - The `ow` CLI
+        - Tests or CI
+        - Documentation
+        - Somewhere else
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs or a screenshot
+      description: Optional. Redact paths and names first.
+    validations:
+      required: false

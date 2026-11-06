@@ -1,0 +1,13 @@
+{
+  "name": "@ow/cli",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "The `ow` command line: the agent interface over the command registry.",
+  "dependencies": {
+    "@ow/geom": "0.1.0",
+    "@ow/model": "0.1.0",
+    "@ow/storage": "0.1.0",
+    "@ow/commands": "0.1.0"
+  }
+}

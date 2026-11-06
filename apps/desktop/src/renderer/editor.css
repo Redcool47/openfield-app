@@ -1,0 +1,744 @@
+/**
+ * Editor styles.
+ *
+ * Separate from app.css because this file describes *editable* blocks and
+ * app.css describes *layout*. They change for different reasons and at different
+ * rates, and merging them is how a 900-line stylesheet with no discernible
+ * structure comes about.
+ *
+ * Every value is a token. The type scale below is measured from reference
+ * footage; see design/measurements.md for provenance and for which of these are
+ * measured rather than estimated.
+ */
+
+.ow-block {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  gap: var(--ow-space-2);
+  padding: var(--ow-space-1) 0;
+}
+
+.ow-block-gutter {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  min-height: 26px;
+  color: var(--ow-text-faint);
+  user-select: none;
+}
+
+/* ---------------------------------------------------------------- editable */
+
+.ow-block-text {
+  flex: 1 1 auto;
+  min-width: 0;
+  min-height: 26px;
+  padding: 2px 2px;
+  border-radius: var(--ow-radius-sm);
+  outline: none;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  caret-color: var(--ow-accent);
+}
+
+/*
+ * The focus ring is suppressed on the editable itself and drawn on the block
+ * instead. A contenteditable draws the browser's default ring around the text
+ * run, which on a block editor means a box around one line while the rest of the
+ * block stays unmarked -- the block is the unit the user is thinking in, so the
+ * block is what gets marked.
+ */
+.ow-block:focus-within {
+  background: var(--ow-bg-hover);
+  border-radius: var(--ow-radius-sm);
+}
+
+/* Placeholder via :empty, so it disappears on the first keystroke without any
+   JavaScript involvement. A placeholder element would have to be removed and
+   reinserted, which is a reliable way to lose the caret. */
+.ow-block-text:empty::before {
+  content: attr(data-placeholder);
+  color: var(--ow-text-faint);
+  pointer-events: none;
+}
+
+.ow-block-done {
+  color: var(--ow-text-muted);
+  text-decoration: line-through;
+  text-decoration-thickness: 1px;
+}
+
+.ow-block-mono {
+  font-family: var(--ow-type-font-mono);
+  font-size: var(--ow-type-body-small);
+  background: var(--ow-bg-code);
+  border: 1px solid var(--ow-border);
+  border-radius: var(--ow-radius-sm);
+  padding: var(--ow-space-2) var(--ow-space-3);
+  tab-size: 2;
+}
+
+/* ------------------------------------------------------------ block variants */
+
+.ow-block-heading1 .ow-block-text {
+  font-size: var(--ow-type-h1);
+  font-weight: 700;
+  line-height: 1.2;
+  margin-top: var(--ow-space-4);
+  margin-bottom: var(--ow-space-1);
+}
+
+.ow-block-heading2 .ow-block-text {
+  font-size: var(--ow-type-h2);
+  font-weight: 650;
+  line-height: 1.25;
+  margin-top: var(--ow-space-3);
+}
+
+.ow-block-heading3 .ow-block-text {
+  font-size: var(--ow-type-h3);
+  font-weight: 600;
+  line-height: 1.3;
+  margin-top: var(--ow-space-2);
+}
+
+.ow-block-quote {
+  border-left: 3px solid var(--ow-border-strong);
+  padding-left: var(--ow-space-3);
+  margin: var(--ow-space-1) 0;
+}
+
+.ow-block-quote .ow-block-text {
+  font-size: var(--ow-type-body);
+  color: var(--ow-text-muted);
+}
+
+.ow-block-code {
+  margin: var(--ow-space-2) 0;
+}
+
+.ow-block-toggle .ow-block-gutter {
+  cursor: pointer;
+}
+
+.ow-divider {
+  flex: 1 1 auto;
+  height: 1px;
+  margin: var(--ow-space-3) 0;
+  border: 0;
+  background: var(--ow-border);
+}
+
+.ow-block-checkbox {
+  flex: 0 0 auto;
+  width: 16px;
+  height: 16px;
+  margin: 5px 0 0;
+  accent-color: var(--ow-accent);
+  cursor: pointer;
+}
+
+.ow-collapsed-count {
+  flex: 0 0 auto;
+  align-self: center;
+  padding: 0 var(--ow-space-1);
+  border: 0;
+  border-radius: var(--ow-radius-sm);
+  background: var(--ow-bg-badge);
+  color: var(--ow-text-muted);
+  font: inherit;
+  font-size: var(--ow-type-body-small);
+  cursor: pointer;
+}
+
+.ow-collapsed-count:hover {
+  background: var(--ow-bg-active);
+}
+
+/* ----------------------------------------------------------------- slash menu */
+
+/*
+ * Positioned relative to the block rather than the caret. Anchoring to the caret
+ * means the menu follows the text as it moves, which looks clever and is
+ * unusable: the menu jitters while you type the query that filters it.
+ */
+.ow-slash {
+  position: absolute;
+  z-index: 40;
+  top: 100%;
+  left: 0;
+  min-width: 240px;
+  max-height: 320px;
+  overflow-y: auto;
+  padding: var(--ow-space-1);
+  background: var(--ow-bg-overlay);
+  border: 1px solid var(--ow-border);
+  border-radius: var(--ow-radius-md);
+  box-shadow: var(--ow-elevation-popover);
+}
+
+.ow-slash-item {
+  display: flex;
+  align-items: center;
+  gap: var(--ow-space-2);
+  width: 100%;
+  padding: var(--ow-space-2);
+  border: 0;
+  border-radius: var(--ow-radius-sm);
+  background: transparent;
+  color: var(--ow-text);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.ow-slash-item:hover,
+.ow-slash-item:focus-visible {
+  background: var(--ow-bg-hover);
+}
+
+.ow-slash-icon {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border: 1px solid var(--ow-border);
+  border-radius: var(--ow-radius-sm);
+  color: var(--ow-text-muted);
+}
+
+.ow-slash-text {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.ow-slash-label {
+  font-size: var(--ow-type-body);
+}
+
+.ow-slash-alias {
+  font-size: var(--ow-type-body-small);
+  color: var(--ow-text-faint);
+}
+
+/* ------------------------------------------------------- multi-block selection */
+
+/* An overlay rather than a solid fill. A solid highlight behind body text at 16px
+   is legible but heavy, and the left rule does most of the work anyway -- which
+   is the same reason the interaction tokens are overlays rather than solids. */
+.ow-block-selected {
+  position: relative;
+  background: var(--ow-bg-selected);
+  border-radius: var(--ow-radius-sm);
+}
+
+.ow-block-selected::before {
+  content: '';
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 2px;
+  border-radius: 1px;
+  background: var(--ow-accent);
+}
+
+/* The gutter becomes an explicit control on hover rather than just appearing. A
+   hit target that only exists once hovered is undiscoverable and unhittable for
+   anyone using a keyboard or a screen reader. */
+.ow-block-gutter[role='button'] {
+  cursor: pointer;
+}
+
+.ow-block:hover .ow-block-gutter,
+.ow-block-selected .ow-block-gutter {
+  opacity: 1;
+}
+
+/* The row the arrow keys are on. Needs to be visible without a mouse and needs
+   to survive the list scrolling under the caret, so it is a background rather
+   than a border. */
+.ow-slash-item.ow-slash-active {
+  background: var(--ow-bg-hover);
+}
+
+/* ------------------------------------------------------- block drag and drop */
+
+/* The dragged block dims rather than disappearing: a drag source that vanishes
+   under the cursor gives no indication of what is being moved. */
+.ow-block[data-dragging='true'] {
+  opacity: 0.4;
+}
+
+/* The drop indicator is a rule on the block being hovered, not a floating
+   element. A floating indicator has to be kept in sync with scrolling and with
+   every reflow; a pseudo-element on the target cannot drift. */
+.ow-block[data-drop='before']::before,
+.ow-block[data-drop='after']::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--ow-accent);
+  border-radius: 1px;
+  pointer-events: none;
+  z-index: 3;
+}
+
+.ow-block[data-drop='before']::before {
+  top: -1px;
+}
+
+.ow-block[data-drop='after']::after {
+  bottom: -1px;
+}
+
+/* The grip is the whole gutter, which is already 20px wide -- no extra hit area
+   needed, and a separate small dot would be far harder to grab. */
+.ow-block-gutter {
+  cursor: grab;
+  touch-action: none;
+}
+
+.ow-block-gutter:active {
+  cursor: grabbing;
+}
+
+/* The plus lives in the gutter and only appears on hover, so it never competes
+   with the block's own type icon. */
+.ow-block-add {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  padding: 0;
+  border: none;
+  border-radius: 3px;
+  background: var(--ow-bg-active);
+  color: var(--ow-text-secondary);
+  cursor: pointer;
+}
+
+.ow-block:hover .ow-block-add,
+.ow-block-add:focus-visible {
+  display: inline-flex;
+}
+
+.ow-block-add:hover {
+  color: var(--ow-text);
+}
+
+/* ------------------------------------------------------------- inline marks */
+
+/* Marks are drawn from data-attributes so the stylesheet owns every visual
+   decision. Without these rules a mark is stored, applied by a command, and
+   then invisible -- the toggle looks like it did nothing. */
+.ow-block-text [data-mark~='bold'] {
+  font-weight: 700;
+}
+
+.ow-block-text [data-mark~='italic'] {
+  font-style: italic;
+}
+
+.ow-block-text [data-mark~='underline'] {
+  text-decoration: underline;
+}
+
+.ow-block-text [data-mark~='strikethrough'] {
+  text-decoration: line-through;
+}
+
+.ow-block-text [data-mark~='code'] {
+  font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, monospace;
+  font-size: 0.92em;
+  background: var(--ow-bg-sunken);
+  border-radius: 3px;
+  padding: 1px 4px;
+}
+
+/* A link is a span, not an anchor: an anchor inside a contenteditable eats the
+   click, so the caret cannot be placed inside a linked word at all. */
+.ow-block-text [data-link] {
+  color: var(--ow-accent);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  cursor: text;
+}
+
+.ow-block-text [data-color='grey'],
+.ow-block-text [data-color='gray'] {
+  color: var(--ow-text-secondary);
+}
+
+/* The rest of the palette. One rule per hue rather than a loop, because a
+   stylesheet has no loop and the attribute value is the stored name; a token
+   that no hue names is a mistake the rule set makes visible.
+   The background is the same hue mixed down, so a page that switches theme
+   gets both from one token per hue. */
+.ow-block-text [data-color='brown'] {
+  color: var(--ow-mark-brown);
+}
+.ow-block-text [data-color='orange'] {
+  color: var(--ow-mark-orange);
+}
+.ow-block-text [data-color='yellow'] {
+  color: var(--ow-mark-yellow);
+}
+.ow-block-text [data-color='green'] {
+  color: var(--ow-mark-green);
+}
+.ow-block-text [data-color='blue'] {
+  color: var(--ow-mark-blue);
+}
+.ow-block-text [data-color='purple'] {
+  color: var(--ow-mark-purple);
+}
+.ow-block-text [data-color='pink'] {
+  color: var(--ow-mark-pink);
+}
+.ow-block-text [data-color='red'] {
+  color: var(--ow-mark-red);
+}
+
+.ow-block-text [data-background='gray'],
+.ow-block-text [data-background='grey'] {
+  background: color-mix(in srgb, var(--ow-mark-gray) 18%, transparent);
+  border-radius: 3px;
+  padding: 1px 2px;
+  margin: -1px -2px;
+}
+.ow-block-text [data-background='brown'] {
+  background: color-mix(in srgb, var(--ow-mark-brown) 18%, transparent);
+  border-radius: 3px;
+  padding: 1px 2px;
+  margin: -1px -2px;
+}
+.ow-block-text [data-background='orange'] {
+  background: color-mix(in srgb, var(--ow-mark-orange) 18%, transparent);
+  border-radius: 3px;
+  padding: 1px 2px;
+  margin: -1px -2px;
+}
+.ow-block-text [data-background='yellow'] {
+  background: color-mix(in srgb, var(--ow-mark-yellow) 20%, transparent);
+  border-radius: 3px;
+  padding: 1px 2px;
+  margin: -1px -2px;
+}
+.ow-block-text [data-background='green'] {
+  background: color-mix(in srgb, var(--ow-mark-green) 18%, transparent);
+  border-radius: 3px;
+  padding: 1px 2px;
+  margin: -1px -2px;
+}
+.ow-block-text [data-background='blue'] {
+  background: color-mix(in srgb, var(--ow-mark-blue) 16%, transparent);
+  border-radius: 3px;
+  padding: 1px 2px;
+  margin: -1px -2px;
+}
+.ow-block-text [data-background='purple'] {
+  background: color-mix(in srgb, var(--ow-mark-purple) 16%, transparent);
+  border-radius: 3px;
+  padding: 1px 2px;
+  margin: -1px -2px;
+}
+.ow-block-text [data-background='pink'] {
+  background: color-mix(in srgb, var(--ow-mark-pink) 16%, transparent);
+  border-radius: 3px;
+  padding: 1px 2px;
+  margin: -1px -2px;
+}
+.ow-block-text [data-background='red'] {
+  background: color-mix(in srgb, var(--ow-mark-red) 16%, transparent);
+  border-radius: 3px;
+  padding: 1px 2px;
+  margin: -1px -2px;
+}
+
+/* --------------------------------------------------------- table of contents */
+
+/* Levels are indented from the heading level rather than from block depth: a
+   contents list follows the outline of the document, not where the heading
+   happens to be nested. */
+.ow-toc {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin: var(--ow-space-2) 0;
+  padding: var(--ow-space-2) 0;
+  border-top: 1px solid var(--ow-border);
+  border-bottom: 1px solid var(--ow-border);
+}
+
+.ow-toc--empty {
+  color: var(--ow-text-faint);
+  font-size: var(--ow-type-body-small);
+  border: 1px dashed var(--ow-border);
+  border-radius: var(--ow-radius-sm);
+  padding: var(--ow-space-2) var(--ow-space-3);
+}
+
+.ow-toc-entry {
+  display: block;
+  width: 100%;
+  padding: 3px 6px;
+  border: none;
+  border-radius: var(--ow-radius-sm);
+  background: none;
+  color: var(--ow-text-secondary);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.ow-toc-entry[data-level='2'] {
+  padding-left: 20px;
+}
+
+.ow-toc-entry[data-level='3'] {
+  padding-left: 34px;
+  font-size: var(--ow-type-body-small);
+}
+
+.ow-toc-entry:hover {
+  background: var(--ow-bg-hover);
+  color: var(--ow-text);
+}
+
+/* --------------------------------------------------- floating selection bar */
+
+/* Fixed to the measured selection rect, so it scrolls with nothing and is
+   positioned once. A toolbar with a stored position drifts away from its text
+   the instant the page moves under it. */
+.ow-selbar {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 3px;
+  border: 1px solid var(--ow-border);
+  border-radius: var(--ow-radius-md);
+  background: var(--ow-bg-raised);
+  box-shadow: 0 6px 20px rgba(15, 23, 42, 0.16);
+  z-index: 60;
+}
+
+.ow-selbar-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: none;
+  border-radius: var(--ow-radius-sm);
+  background: none;
+  color: var(--ow-text-secondary);
+  cursor: pointer;
+}
+
+.ow-selbar-btn:hover {
+  background: var(--ow-bg-hover);
+  color: var(--ow-text);
+}
+
+.ow-selbar-glyph {
+  font-size: 13px;
+  line-height: 1;
+  font-family: inherit;
+}
+
+.ow-selbar-glyph--bold {
+  font-weight: 800;
+}
+
+.ow-selbar-glyph--italic {
+  font-style: italic;
+  font-family: Georgia, serif;
+}
+
+.ow-selbar-glyph--strike {
+  text-decoration: line-through;
+}
+
+.ow-selbar-glyph--code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 11px;
+}
+
+/* ------------------------------------------------------------ colour picker */
+
+.ow-selbar-colour {
+  position: relative;
+  display: inline-flex;
+}
+
+/* The glyph and its swatch share the 28px button, stacked, so the colour the
+   user last chose is always visible in the control itself. */
+.ow-selbar-btn--colour {
+  flex-direction: column;
+  gap: 1px;
+}
+
+.ow-selbar-palette {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 8px;
+  border: 1px solid var(--ow-border);
+  border-radius: var(--ow-radius-md);
+  background: var(--ow-bg-raised);
+  box-shadow: 0 10px 26px rgba(15, 23, 42, 0.18);
+}
+
+.ow-selbar-row {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.ow-selbar-row-label {
+  width: 30px;
+  font-size: 11px;
+  color: var(--ow-text-faint);
+}
+
+/* Swatches are 16px discs. The border is always drawn, because the "default"
+   swatch is empty and a disc with no border is not visible at all. */
+.ow-selbar-swatch {
+  display: block;
+  width: 16px;
+  height: 16px;
+  padding: 0;
+  border: 1px solid var(--ow-border-strong);
+  border-radius: 50%;
+  background: transparent;
+  cursor: pointer;
+}
+
+.ow-selbar-btn .ow-selbar-swatch {
+  width: 18px;
+  height: 4px;
+  border: none;
+  border-radius: 2px;
+  background: var(--ow-mark-blue);
+}
+
+.ow-selbar-swatch:hover {
+  outline: 2px solid var(--ow-accent);
+  outline-offset: 1px;
+}
+
+.ow-selbar-swatch--default,
+.ow-selbar-swatch.is-default {
+  background: linear-gradient(
+    135deg,
+    transparent 44%,
+    var(--ow-text-faint) 44%,
+    var(--ow-text-faint) 56%,
+    transparent 56%
+  );
+}
+
+.ow-selbar-swatch--gray,
+.ow-selbar-swatch--grey {
+  background: var(--ow-mark-gray);
+}
+.ow-selbar-swatch--brown {
+  background: var(--ow-mark-brown);
+}
+.ow-selbar-swatch--orange {
+  background: var(--ow-mark-orange);
+}
+.ow-selbar-swatch--yellow {
+  background: var(--ow-mark-yellow);
+}
+.ow-selbar-swatch--green {
+  background: var(--ow-mark-green);
+}
+.ow-selbar-swatch--blue {
+  background: var(--ow-mark-blue);
+}
+.ow-selbar-swatch--purple {
+  background: var(--ow-mark-purple);
+}
+.ow-selbar-swatch--pink {
+  background: var(--ow-mark-pink);
+}
+.ow-selbar-swatch--red {
+  background: var(--ow-mark-red);
+}
+
+/* ------------------------------------------------- rubber band block select */
+
+/* Fixed, not absolute: the band is measured in viewport coordinates, because
+   that is what mousemove reports and what getBoundingClientRect returns. An
+   absolute band inside the scroller would drift the moment the page scrolled
+   under it. */
+.ow-band {
+  position: fixed;
+  z-index: 30;
+  background: color-mix(in srgb, var(--ow-accent) 14%, transparent);
+  border: 1px solid color-mix(in srgb, var(--ow-accent) 45%, transparent);
+  border-radius: 2px;
+  pointer-events: none;
+}
+
+/* ------------------------------------------------------------ page mentions */
+
+/* A chip, because a mention is a reference and reads as one. Keeping the label
+   as real characters in the model is what lets search, export and word count
+   agree with the screen; the chip is only paint over them. */
+.ow-inline {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 3px;
+  padding: 0 4px;
+  border-radius: var(--ow-radius-sm);
+  background: color-mix(in srgb, var(--ow-accent) 12%, transparent);
+  color: var(--ow-accent);
+  cursor: text;
+}
+
+/* ------------------------------------------------------------- callouts */
+
+/* A callout is a box with an icon, and the icon says which kind it is.
+   Without it a callout is a quote in a different colour, and the kind --
+   which is the whole point of a callout -- is nowhere to be seen. */
+.ow-block-callout {
+  position: relative;
+}
+
+.ow-callout {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  margin-right: 2px;
+  border-radius: var(--ow-radius-sm);
+  background: var(--ow-bg-code);
+  color: var(--ow-text-muted);
+  vertical-align: text-top;
+}
+
+.ow-callout[data-callout='warning'],
+.ow-callout[data-callout='caution'] {
+  background: color-mix(in srgb, var(--ow-danger) 14%, transparent);
+  color: var(--ow-danger);
+}
+
+.ow-callout[data-callout='tip'] {
+  background: color-mix(in srgb, var(--ow-accent) 14%, transparent);
+  color: var(--ow-accent);
+}

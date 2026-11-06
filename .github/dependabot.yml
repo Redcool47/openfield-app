@@ -1,0 +1,23 @@
+# Weekly, not daily: this is a single-maintainer project and a daily stream of
+# pull requests would be noise rather than maintenance. Grouped majors so one
+# review covers the Electron/TypeScript family instead of five separate PRs.
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 5
+    groups:
+      toolchain:
+        patterns:
+          - electron*
+          - vite
+          - typescript
+          - eslint*
+          - '@types/*'
+
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: monthly

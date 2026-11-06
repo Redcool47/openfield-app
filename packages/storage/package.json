@@ -1,0 +1,12 @@
+{
+  "name": "@ow/storage",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "L2. SQLite schema, forward-only migrations, FTS5 search, assets, op log, crash recovery.",
+  "dependencies": {
+    "@ow/geom": "0.1.0",
+    "@ow/model": "0.1.0"
+  },
+  "exports": { ".": "./src/index.ts" }
+}

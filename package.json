@@ -1,0 +1,73 @@
+{
+  "name": "openfield",
+  "version": "0.2.0",
+  "private": true,
+  "description": "Openfield -- a local-first, open-source workspace: nested pages, a block editor and page-backed databases.",
+  "license": "MIT",
+  "author": "Openfield contributors",
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "workspaces": [
+    "packages/geom",
+    "packages/model",
+    "packages/text",
+    "packages/db-engine",
+    "packages/formula",
+    "packages/storage",
+    "packages/formats",
+    "packages/commands",
+    "packages/automation",
+    "packages/ui-kit",
+    "packages/editor-ui",
+    "packages/app-ui",
+    "apps/cli",
+    "apps/desktop",
+    "tools/xtask"
+  ],
+  "scripts": {
+    "build": "npm run build --workspaces --if-present",
+    "typecheck": "tsc -b tsconfig.build.json",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "lint": "eslint .",
+    "layering": "node tools/xtask/layering.mjs",
+    "attribution": "node tools/xtask/attribution.mjs",
+    "parity": "node tools/xtask/parity-report.mjs",
+    "tokens": "node tools/xtask/generate-tokens.mjs",
+    "ow": "node apps/cli/bin/ow.mjs",
+    "dev": "node apps/desktop/bin/dev.mjs",
+    "package": "npm run dist --workspace apps/desktop",
+    "ci": "node tools/xtask/ci.mjs"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.64.1",
+    "@types/node": "22.10.2",
+    "@types/react": "18.3.18",
+    "@types/react-dom": "18.3.5",
+    "@vitejs/plugin-react": "4.3.4",
+    "electron": "33.3.1",
+    "electron-builder": "25.1.8",
+    "eslint": "9.17.0",
+    "jsdom": "25.0.1",
+    "playwright": "^1.64.1",
+    "typescript": "5.7.2",
+    "vite": "6.0.7",
+    "vitest": "2.1.8"
+  },
+  "dependencies": {
+    "better-sqlite3": "11.7.0",
+    "katex": "0.16.19",
+    "prosemirror-commands": "1.6.2",
+    "prosemirror-history": "1.4.1",
+    "prosemirror-inputrules": "1.4.0",
+    "prosemirror-keymap": "1.2.2",
+    "prosemirror-model": "1.24.1",
+    "prosemirror-state": "1.4.3",
+    "prosemirror-transform": "1.10.2",
+    "prosemirror-view": "1.37.2",
+    "react": "18.3.1",
+    "react-dom": "18.3.1"
+  }
+}

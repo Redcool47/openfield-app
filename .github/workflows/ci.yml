@@ -1,0 +1,35 @@
+name: CI
+
+# The five enforced gates only. `package` and `e2e` need a built Electron app
+# and a display, so they run on a developer machine; skipping them here is
+# stated rather than hidden, because a workflow that quietly ran four gates and
+# called itself CI is worse than one that runs five.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  gates:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      # No native build step: the SQLite driver is preferred over
+      # better-sqlite3, and ignoring install scripts keeps the run reproducible.
+      - run: npm ci --ignore-scripts
+
+      - name: layering, attribution, typecheck, unit, parity
+        run: node tools/xtask/ci.mjs layering attribution typecheck unit parity

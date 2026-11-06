@@ -1,0 +1,5 @@
+[
+  { "id": "page.create", "args": { "title": "Projects" } },
+  { "id": "page.create", "args": { "title": "Reading list" } },
+  { "id": "page.create", "args": { "title": "Archive" } }
+]

@@ -1,0 +1,171 @@
+/**
+ * Design tokens. GENERATED FILE -- do not edit.
+ *
+ * Source of truth: design/tokens.json. Regenerate with:
+ *   node tools/xtask/generate-tokens.mjs
+ *
+ * Each declaration carries a comment saying whether the value was
+ * MEASURED out of reference footage or is APPROX. Approx values are
+ * ours, not parity, and must not be presented as matching the reference.
+ */
+:root {
+  --ow-bg: #ffffff; /* Corrected from #fdfdfc. Pure white. The previous value was a warm off-white sampled from compressed video, and chroma subsampling in the codec is precisely what turns a white page faintly cream. An off-white ground also lowers the contrast of every text token sitting on it, which is a side effect nobody chooses on purpose. Verified by tools/check-contrast.mjs, which is the gate that actually constrains this value rather than taste. */
+  --ow-bg-sidebar: #f7f6f4; /* Corrected from #f4f2f0. Much closer to the ground than before. Ours sat ~13 steps below the page; a sidebar that reads as part of the window sits ~7. A wider gap makes the sidebar look like a second application pane rather than a region of this one. Cross-checked against a second open-source implementation of the same kind of product, which uses the same narrow relationship; the number here is chosen here. Verified by tools/check-contrast.mjs, which is the gate that actually constrains this value rather than taste. */
+  --ow-bg-overlay: #fefefe; /* Menus and dialogs are the brightest surface. */
+  --ow-bg-hover: rgba(16, 16, 24, 0.05); /* An alpha overlay rather than a solid colour, so the same token composites correctly on any surface instead of needing one value per background. */
+  --ow-bg-selected: rgba(16, 16, 24, 0.085); /* An alpha overlay rather than a solid colour, so the same token composites correctly on any surface instead of needing one value per background. */
+  --ow-bg-active: rgba(16, 16, 24, 0.13); /* An alpha overlay rather than a solid colour, so the same token composites correctly on any surface instead of needing one value per background. */
+  --ow-text: #2a2a28; /* Warm near-black. Not #000000. */
+  --ow-text-secondary: #363635; /* measured */
+  --ow-text-muted: #706e6b; /* Derived, not sampled. Raised from #9b9997 by walking lightness at the same hue and saturation until the worst background clears 4.5:1 (now 4.55:1, was 2.54:1). Section labels, column headers, menu descriptions and database cells. All reading material at 14-16px, so WCAG AA normal text applies. At 2.44:1 this was the dimmest thing on the page that anyone is meant to read. Verified by tools/check-contrast.mjs, which is why this is not a hand-picked grey. */
+  --ow-text-faint: #8e8a86; /* APPROX -- not measured, see design/measurements.md | Derived, not sampled. Raised from #c4c2c0 by walking lightness at the same hue and saturation until the worst background clears 3:1 (now 3.07:1, was 1.59:1). Block drag handle, disclosure chevrons, menu group labels and column counts. Affordances rather than prose, so the large-text 3:1 figure applies. Held below textMuted on purpose so the two tokens stay doing different jobs. Verified by tools/check-contrast.mjs, which is why this is not a hand-picked grey. */
+  --ow-border: #e7e5e3; /* measured */
+  --ow-border-strong: #e2e0dd; /* measured */
+  --ow-accent: #2f6fed; /* APPROX -- not measured, see design/measurements.md | Placeholder accent, ours by design. Must not resemble any vendor mark. */
+  --ow-accent-text: #ffffff; /* APPROX -- not measured, see design/measurements.md */
+  --ow-danger: #b03a2e; /* APPROX -- not measured, see design/measurements.md | Used for the visually distinct Move to Trash action (operator requirement R2). */
+  --ow-bg-code: #f6f6f5; /* Code and callout panels. These were faked with bgActive, which is right for a selected row and far too light for a code panel. */
+  --ow-bg-sunken: #f1f0ee; /* Recessed areas that hold other content, such as a board column. Distinct from bgCode: a sunken area is a container, not a panel. */
+  --ow-bg-badge: #eae8e5; /* Small counts and chips sitting on text. Tuned separately from the surfaces because it has to hold against body copy without competing with it. */
+  /* mark */
+    --ow-mark-gray: #6b6b68; /* APPROX -- not measured, see design/measurements.md | Text-colour palette for inline marks. Ours by design, not measured: the reference product's hues were not sampled, because sampling them would be copying its palette. Each passes 4.5:1 on bg in this theme (tools/check-contrast.mjs). The matching background is derived in CSS with color-mix, so one token per hue covers both. */
+    --ow-mark-brown: #8a5a2b; /* APPROX -- not measured, see design/measurements.md */
+    --ow-mark-orange: #a04a12; /* APPROX -- not measured, see design/measurements.md */
+    --ow-mark-yellow: #8a5f08; /* APPROX -- not measured, see design/measurements.md */
+    --ow-mark-green: #2f7a4f; /* APPROX -- not measured, see design/measurements.md */
+    --ow-mark-blue: #2660e0; /* APPROX -- not measured, see design/measurements.md */
+    --ow-mark-purple: #7b4bd0; /* APPROX -- not measured, see design/measurements.md */
+    --ow-mark-pink: #b3447f; /* APPROX -- not measured, see design/measurements.md */
+    --ow-mark-red: #c0392b; /* APPROX -- not measured, see design/measurements.md */
+}
+
+/* Everything below is theme-independent by design, so it stays in one
+ * block rather than being duplicated per theme. */
+:root {
+  /* space */
+    --ow-space-1: 4px; /* measured */
+    --ow-space-2: 8px; /* measured */
+    --ow-space-3: 12px; /* APPROX -- not measured, see design/measurements.md */
+    --ow-space-4: 16px; /* measured */
+    --ow-space-5: 20px; /* APPROX -- not measured, see design/measurements.md */
+    --ow-space-6: 24px; /* APPROX -- not measured, see design/measurements.md */
+    --ow-space-8: 32px; /* APPROX -- not measured, see design/measurements.md */
+    --ow-space-10: 40px; /* APPROX -- not measured, see design/measurements.md */
+    --ow-space-12: 48px; /* APPROX -- not measured, see design/measurements.md */
+    --ow-space-16: 64px; /* APPROX -- not measured, see design/measurements.md */
+    --ow-space-page-top: 40px; /* APPROX -- not measured, see design/measurements.md | Air above a page title. Deliberately not a step on the 4px scale: it is set by where the title should sit in the window, not by the block rhythm below it. */
+    --ow-space-page-side: 56px; /* APPROX -- not measured, see design/measurements.md | Air beside the content measure. Less than the top, so the page reads as a column standing in space rather than a box. */
+    --ow-space-page-title-gap: 18px; /* APPROX -- not measured, see design/measurements.md | Below the title, before the first block. */
+    --ow-space-px: 4px; /* measured */
+  /* size */
+    --ow-size-sidebar-width: 260px; /* Measured in the reference frame. */
+    --ow-size-sidebar-min: 200px; /* APPROX -- not measured, see design/measurements.md */
+    --ow-size-sidebar-max: 400px; /* APPROX -- not measured, see design/measurements.md */
+    --ow-size-top-bar-height: 45px; /* APPROX -- not measured, see design/measurements.md | Sampled ~50px including chrome. */
+    --ow-size-content-width: 624px; /* Measured from a native-resolution reference screenshot (2736x1482 at dpr 2) with tools/measure-screenshot.mjs. Right edge of the wrapped paragraph band. The previous 760px was an estimate roughly 135px too wide, which is the difference between comfortable reading and a long line of text. */
+    --ow-size-content-width-wide: 100%; /* APPROX -- not measured, see design/measurements.md */
+    --ow-size-row-height: 28px; /* APPROX -- not measured, see design/measurements.md */
+    --ow-size-icon-sm: 14px; /* APPROX -- not measured, see design/measurements.md */
+    --ow-size-icon-md: 16px; /* APPROX -- not measured, see design/measurements.md */
+    --ow-size-icon-lg: 20px; /* APPROX -- not measured, see design/measurements.md */
+    --ow-size-page-icon: 64px; /* APPROX -- not measured, see design/measurements.md */
+    --ow-size-block-handle: 24px; /* APPROX -- not measured, see design/measurements.md */
+    --ow-size-menu-min-width: 260px; /* Slash menu observed at this width. */
+  /* radius */
+    --ow-radius-sm: 3px; /* APPROX -- not measured, see design/measurements.md */
+    --ow-radius-md: 5px; /* APPROX -- not measured, see design/measurements.md */
+    --ow-radius-lg: 8px; /* APPROX -- not measured, see design/measurements.md */
+    --ow-radius-pill: 999px; /* APPROX -- not measured, see design/measurements.md */
+  /* elevation */
+    --ow-elevation-popover: 0 1px 2px rgba(0, 0, 0, 0.08), 0 10px 28px rgba(0, 0, 0, 0.14); /* Two layers: a tight contact shadow and a wide ambient one. A single value reads as a sticker rather than a lifted surface. */
+    --ow-elevation-modal: 0 2px 6px rgba(0, 0, 0, 0.12), 0 28px 64px rgba(0, 0, 0, 0.24); /* Two layers: a tight contact shadow and a wide ambient one. A single value reads as a sticker rather than a lifted surface. */
+  /* motion */
+    /* motion.instant */
+      --ow-motion-instant-duration: 0ms; /* measured */
+      --ow-motion-instant-easing: linear; /* measured */
+    /* motion.fast */
+      --ow-motion-fast-duration: 120ms; /* measured */
+      --ow-motion-fast-easing: cubic-bezier(0.4, 0, 0.2, 1); /* measured */
+    /* motion.normal */
+      --ow-motion-normal-duration: 150ms; /* measured */
+      --ow-motion-normal-easing: cubic-bezier(0.4, 0, 0.2, 1); /* measured */
+    /* motion.slow */
+      --ow-motion-slow-duration: 220ms; /* measured */
+      --ow-motion-slow-easing: cubic-bezier(0.16, 1, 0.3, 1); /* measured */
+  /* type */
+    --ow-type-title: 41px; /* Measured from a native-resolution reference screenshot (2736x1482 at dpr 2) with tools/measure-screenshot.mjs. Derived from ink-height ratios between bands, anchored to a 16px body. */
+    --ow-type-h1: 30px; /* APPROX -- not measured, see design/measurements.md */
+    --ow-type-h2: 24px; /* APPROX -- not measured, see design/measurements.md */
+    --ow-type-h3: 20px; /* Measured from a native-resolution reference screenshot (2736x1482 at dpr 2) with tools/measure-screenshot.mjs. Derived from ink-height ratios between bands, anchored to a 16px body. */
+    --ow-type-body: 16px; /* APPROX -- not measured, see design/measurements.md */
+    --ow-type-body-small: 14px; /* APPROX -- not measured, see design/measurements.md */
+    --ow-type-caption: 12px; /* APPROX -- not measured, see design/measurements.md */
+    --ow-type-menu-group: 11px; /* APPROX -- not measured, see design/measurements.md | Uppercase slash-menu group headers. */
+    --ow-type-workspace: 17px; /* APPROX -- not measured, see design/measurements.md | The workspace name in the sidebar header. The only type larger than body, and it earns it: it labels the whole tree the way a window title labels the window. Set to body-small it reads as one more row and the sidebar loses its top. */
+    --ow-type-font: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; /* APPROX -- not measured, see design/measurements.md */
+    --ow-type-font-mono: 'Cascadia Code', 'JetBrains Mono', Consolas, 'SF Mono', Menlo, monospace; /* APPROX -- not measured, see design/measurements.md */
+}
+
+/* Dark theme. Measured from reference footage; see design/measurements.md. */
+:root[data-theme="dark"] {
+  --ow-bg: #191919; /* Measured from a native-resolution reference screenshot (2736x1482 at dpr 2) with tools/measure-screenshot.mjs. Supersedes an earlier value read off compressed video, which was too dark. */
+  --ow-bg-sidebar: #202020; /* Measured from two reference screenshots at 2x (analysis/ref/database-screenshot.png and analysis/ref/block-types.png): sidebar #202020 against page #191919. Supersedes a copy of the page colour that carried a note admitting the delta was unisolated. */
+  --ow-bg-overlay: #1f1f1e; /* APPROX -- not measured, see design/measurements.md */
+  --ow-bg-hover: rgba(255, 255, 255, 0.055); /* An alpha overlay rather than a solid colour, so the same token composites correctly on any surface instead of needing one value per background. */
+  --ow-bg-selected: rgba(255, 255, 255, 0.09); /* An alpha overlay rather than a solid colour, so the same token composites correctly on any surface instead of needing one value per background. */
+  --ow-bg-active: rgba(255, 255, 255, 0.14); /* An alpha overlay rather than a solid colour, so the same token composites correctly on any surface instead of needing one value per background. */
+  --ow-text: #f0efed; /* Measured from a native-resolution reference screenshot (2736x1482 at dpr 2) with tools/measure-screenshot.mjs. Supersedes an earlier value read off compressed video. The gap is large: #f0efed against the #cacacb previously believed, because compression pulls near-white down and the eye cannot tell. */
+  --ow-text-secondary: #d4d4d4; /* measured */
+  --ow-text-muted: #8a8a8b; /* Derived, not sampled. Raised from #575758 by walking lightness at the same hue and saturation until the worst background clears 4.5:1 (now 4.61:1, was 2.20:1). Section labels, column headers, menu descriptions and database cells. All reading material at 14-16px, so WCAG AA normal text applies. At 2.44:1 this was the dimmest thing on the page that anyone is meant to read. Verified by tools/check-contrast.mjs, which is why this is not a hand-picked grey. */
+  --ow-text-faint: #696b6c; /* Derived, not sampled. Raised from #464748 by walking lightness at the same hue and saturation until the worst background clears 3:1 (now 3.04:1, was 1.75:1). Block drag handle, disclosure chevrons, menu group labels and column counts. Affordances rather than prose, so the large-text 3:1 figure applies. Held below textMuted on purpose so the two tokens stay doing different jobs. Verified by tools/check-contrast.mjs, which is why this is not a hand-picked grey. */
+  --ow-border: #262626; /* measured */
+  --ow-border-strong: #363737; /* measured */
+  --ow-accent: #5b8dfa; /* APPROX -- not measured, see design/measurements.md */
+  --ow-accent-text: #0b0b0b; /* APPROX -- not measured, see design/measurements.md */
+  --ow-danger: #e06c5c; /* APPROX -- not measured, see design/measurements.md */
+  --ow-bg-code: #222222; /* Code and callout panels. These were faked with bgActive, which is right for a selected row and far too light for a code panel. */
+  --ow-bg-sunken: #1d1d1d; /* Recessed areas that hold other content, such as a board column. Distinct from bgCode: a sunken area is a container, not a panel. */
+  --ow-bg-badge: #2a2a2a; /* Small counts and chips sitting on text. Tuned separately from the surfaces because it has to hold against body copy without competing with it. */
+  /* mark */
+    --ow-mark-gray: #a5a5a0; /* APPROX -- not measured, see design/measurements.md | Dark-theme text colours. Lightened rather than reused: the light-theme hues sit at 4.5:1 on white and around 2:1 on #191919, which is unreadable. Each passes 4.5:1 on bg here (tools/check-contrast.mjs). */
+    --ow-mark-brown: #d3a071; /* APPROX -- not measured, see design/measurements.md */
+    --ow-mark-orange: #f0995c; /* APPROX -- not measured, see design/measurements.md */
+    --ow-mark-yellow: #e3c05a; /* APPROX -- not measured, see design/measurements.md */
+    --ow-mark-green: #74c79a; /* APPROX -- not measured, see design/measurements.md */
+    --ow-mark-blue: #7aa8ff; /* APPROX -- not measured, see design/measurements.md */
+    --ow-mark-purple: #b79bf0; /* APPROX -- not measured, see design/measurements.md */
+    --ow-mark-pink: #ef94bd; /* APPROX -- not measured, see design/measurements.md */
+    --ow-mark-red: #f08a7c; /* APPROX -- not measured, see design/measurements.md */
+}
+
+/* Explicit light theme, for when the OS setting must be overridden. */
+:root[data-theme="light"] {
+  --ow-bg: #ffffff; /* Corrected from #fdfdfc. Pure white. The previous value was a warm off-white sampled from compressed video, and chroma subsampling in the codec is precisely what turns a white page faintly cream. An off-white ground also lowers the contrast of every text token sitting on it, which is a side effect nobody chooses on purpose. Verified by tools/check-contrast.mjs, which is the gate that actually constrains this value rather than taste. */
+  --ow-bg-sidebar: #f7f6f4; /* Corrected from #f4f2f0. Much closer to the ground than before. Ours sat ~13 steps below the page; a sidebar that reads as part of the window sits ~7. A wider gap makes the sidebar look like a second application pane rather than a region of this one. Cross-checked against a second open-source implementation of the same kind of product, which uses the same narrow relationship; the number here is chosen here. Verified by tools/check-contrast.mjs, which is the gate that actually constrains this value rather than taste. */
+  --ow-bg-overlay: #fefefe; /* Menus and dialogs are the brightest surface. */
+  --ow-bg-hover: rgba(16, 16, 24, 0.05); /* An alpha overlay rather than a solid colour, so the same token composites correctly on any surface instead of needing one value per background. */
+  --ow-bg-selected: rgba(16, 16, 24, 0.085); /* An alpha overlay rather than a solid colour, so the same token composites correctly on any surface instead of needing one value per background. */
+  --ow-bg-active: rgba(16, 16, 24, 0.13); /* An alpha overlay rather than a solid colour, so the same token composites correctly on any surface instead of needing one value per background. */
+  --ow-text: #2a2a28; /* Warm near-black. Not #000000. */
+  --ow-text-secondary: #363635; /* measured */
+  --ow-text-muted: #706e6b; /* Derived, not sampled. Raised from #9b9997 by walking lightness at the same hue and saturation until the worst background clears 4.5:1 (now 4.55:1, was 2.54:1). Section labels, column headers, menu descriptions and database cells. All reading material at 14-16px, so WCAG AA normal text applies. At 2.44:1 this was the dimmest thing on the page that anyone is meant to read. Verified by tools/check-contrast.mjs, which is why this is not a hand-picked grey. */
+  --ow-text-faint: #8e8a86; /* APPROX -- not measured, see design/measurements.md | Derived, not sampled. Raised from #c4c2c0 by walking lightness at the same hue and saturation until the worst background clears 3:1 (now 3.07:1, was 1.59:1). Block drag handle, disclosure chevrons, menu group labels and column counts. Affordances rather than prose, so the large-text 3:1 figure applies. Held below textMuted on purpose so the two tokens stay doing different jobs. Verified by tools/check-contrast.mjs, which is why this is not a hand-picked grey. */
+  --ow-border: #e7e5e3; /* measured */
+  --ow-border-strong: #e2e0dd; /* measured */
+  --ow-accent: #2f6fed; /* APPROX -- not measured, see design/measurements.md | Placeholder accent, ours by design. Must not resemble any vendor mark. */
+  --ow-accent-text: #ffffff; /* APPROX -- not measured, see design/measurements.md */
+  --ow-danger: #b03a2e; /* APPROX -- not measured, see design/measurements.md | Used for the visually distinct Move to Trash action (operator requirement R2). */
+  --ow-bg-code: #f6f6f5; /* Code and callout panels. These were faked with bgActive, which is right for a selected row and far too light for a code panel. */
+  --ow-bg-sunken: #f1f0ee; /* Recessed areas that hold other content, such as a board column. Distinct from bgCode: a sunken area is a container, not a panel. */
+  --ow-bg-badge: #eae8e5; /* Small counts and chips sitting on text. Tuned separately from the surfaces because it has to hold against body copy without competing with it. */
+  /* mark */
+    --ow-mark-gray: #6b6b68; /* APPROX -- not measured, see design/measurements.md | Text-colour palette for inline marks. Ours by design, not measured: the reference product's hues were not sampled, because sampling them would be copying its palette. Each passes 4.5:1 on bg in this theme (tools/check-contrast.mjs). The matching background is derived in CSS with color-mix, so one token per hue covers both. */
+    --ow-mark-brown: #8a5a2b; /* APPROX -- not measured, see design/measurements.md */
+    --ow-mark-orange: #a04a12; /* APPROX -- not measured, see design/measurements.md */
+    --ow-mark-yellow: #8a5f08; /* APPROX -- not measured, see design/measurements.md */
+    --ow-mark-green: #2f7a4f; /* APPROX -- not measured, see design/measurements.md */
+    --ow-mark-blue: #2660e0; /* APPROX -- not measured, see design/measurements.md */
+    --ow-mark-purple: #7b4bd0; /* APPROX -- not measured, see design/measurements.md */
+    --ow-mark-pink: #b3447f; /* APPROX -- not measured, see design/measurements.md */
+    --ow-mark-red: #c0392b; /* APPROX -- not measured, see design/measurements.md */
+}

@@ -1,0 +1,11 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "include": ["src/**/*.ts", "src/**/*.tsx", "bin/**/*.mjs"],
+  "compilerOptions": {
+    // The renderer and the main process share a config but not a module system:
+    // the preload is emitted as CommonJS on purpose, because Electron loads it
+    // as CommonJS and a preload that fails to parse silently disables the whole
+    // bridge. Checking it as ESM would miss exactly that class of mistake.
+    "types": ["node", "electron", "vitest/globals"]
+  }
+}

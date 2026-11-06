@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="utf-8" />
+    <!--
+      Strict CSP. The renderer loads only its own bundled assets and talks to
+      nothing remote, so 'self' covers scripts, styles and connections. No
+      unsafe-inline and no unsafe-eval: a content injection bug should not be
+      able to execute anything.
+
+      'unsafe-inline' is permitted for styles only, and only because the
+      generated token stylesheet is injected at runtime. It buys nothing for
+      script execution, which is where the risk is.
+
+      frame-ancestors is deliberately absent. It is ignored when a policy is
+      delivered in a <meta> element -- Chromium logs exactly that warning -- so
+      listing it here would advertise a protection that is not in force. Framing
+      is instead refused by the window itself: navigation away from our own
+      content is denied in the main process, and no window is ever framed.
+    -->
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'"
+    />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Openfield</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="./main.tsx"></script>
+  </body>
+</html>

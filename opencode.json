@@ -1,0 +1,18 @@
+{
+  "mcp": {
+    "servers": {
+      "magicuidesign-mcp": {
+        "type": "local",
+        "command": [
+          "npx",
+          "-y",
+          "@magicuidesign/mcp@latest"
+        ]
+      },
+      "firecrawl": {
+        "type": "remote",
+        "url": "https://mcp.firecrawl.dev/v2/mcp"
+      }
+    }
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "name": "@ow/model",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "L1. Block schema, tree operations, transactions, undo and the selection model. Headless.",
+  "dependencies": { "@ow/geom": "0.1.0" },
+  "exports": { ".": "./src/index.ts" }
+}

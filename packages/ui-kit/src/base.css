@@ -1,0 +1,129 @@
+/**
+ * Base styles: reset, typography defaults, focus rings, motion policy.
+ *
+ * Everything here reads from tokens. There are no literal colours in this file,
+ * which is enforced by review rather than by tooling for now; the layering and
+ * attribution checks do not yet cover CSS. A CI check that greps the package sources
+ * for hex colours outside 'tokens.css' is the obvious next step and is recorded
+ * in the ledger.
+ */
+
+:root {
+  color-scheme: light;
+}
+
+:root[data-theme='dark'] {
+  color-scheme: dark;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background: var(--ow-bg);
+  color: var(--ow-text);
+  font-family: var(--ow-type-font);
+  font-size: var(--ow-type-body);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  /* The app is local-first; nothing should be selectable as a stray gesture
+     except content the user actually means to select. */
+  overflow: hidden;
+}
+
+/**
+ * Focus rings.
+ *
+ * Visible only for keyboard interaction. ':focus-visible' rather than ':focus'
+ * so a mouse click on a button does not leave a ring behind, which is a detail
+ * users notice when it is wrong and never notice when it is right.
+ */
+:focus {
+  outline: none;
+}
+
+:focus-visible {
+  outline: 2px solid var(--ow-accent);
+  outline-offset: 1px;
+  border-radius: var(--ow-radius-sm);
+}
+
+button {
+  font: inherit;
+  color: inherit;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+}
+
+button:disabled {
+  cursor: default;
+  opacity: 0.45;
+}
+
+input,
+textarea {
+  font: inherit;
+  color: inherit;
+}
+
+/**
+ * Motion policy.
+ *
+ * Motion's documented guidance is 'reducedMotion: 'user'': respect the device
+ * setting rather than forcing or ignoring it. The CSS equivalent is to collapse
+ * durations to near-zero when the user asks for less motion, rather than
+ * removing transitions entirely -- a hard 'none' makes state changes appear
+ * instantaneous and therefore unacknowledged.
+ */
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --ow-motion-fast-duration: 1ms;
+    --ow-motion-normal-duration: 1ms;
+    --ow-motion-slow-duration: 1ms;
+  }
+}
+
+/* Scrollbars: present but quiet, matching the warm neutral palette. */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--ow-border-strong);
+  border: 3px solid transparent;
+  background-clip: content-box;
+  border-radius: 999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--ow-text-faint);
+  background-clip: content-box;
+}
+
+/** Visually hidden but reachable by assistive technology. */
+.ow-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}

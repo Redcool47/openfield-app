@@ -1,0 +1,38 @@
+name: Feature request
+description: Something Openfield should do that it does not
+labels: [enhancement]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Openfield is local-first and offline by design: every feature has to
+        work with the network unplugged. Requests for accounts, sync services or
+        telemetry will be closed, kindly.
+  - type: textarea
+    id: problem
+    attributes:
+      label: The problem
+      description: What are you trying to do, and where does it stop working?
+    validations:
+      required: true
+  - type: textarea
+    id: shape
+    attributes:
+      label: What it could look like
+      description: Optional. A sketch, a command name, a file on disk.
+    validations:
+      required: false
+  - type: dropdown
+    id: layer
+    attributes:
+      label: Which part
+      options:
+        - Editor
+        - Pages and the sidebar
+        - Databases
+        - Files, import and export
+        - The `ow` CLI or the command registry
+        - Packaging
+        - Not sure
+    validations:
+      required: true

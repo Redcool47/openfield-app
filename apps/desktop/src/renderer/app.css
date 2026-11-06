@@ -1,0 +1,1859 @@
+/**
+ * Application layout styles.
+ *
+ * All values come from tokens. The two measurements that matter most for
+ * "does this feel familiar" are the sidebar width and the content measure, and
+ * both are pinned to the values measured from reference footage.
+ */
+
+.ow-app {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  /* Required, and the reason the sidebar footer used to be clipped off the
+     bottom of the window. With no explicit row the implicit one is `auto`, so it
+     is sized to its content and overflows the height-100% container instead of
+     shrinking -- which leaves the flex column inside it no definite height to
+     scroll within. minmax(0, 1fr) fixes both halves of that. */
+  grid-template-rows: minmax(0, 1fr);
+  height: 100%;
+  background: var(--ow-bg);
+}
+
+.ow-app[data-sidebar='closed'] {
+  grid-template-columns: 1fr;
+}
+
+/* ------------------------------------------------------------------ sidebar */
+
+.ow-sidebar {
+  display: flex;
+  flex-direction: column;
+  width: var(--ow-size-sidebar-width);
+  min-width: var(--ow-size-sidebar-min);
+  background: var(--ow-bg-sidebar);
+  border-right: 1px solid var(--ow-border);
+  overflow: hidden;
+}
+
+.ow-sidebar-head {
+  display: flex;
+  align-items: center;
+  gap: var(--ow-space-1);
+  padding: var(--ow-space-2) var(--ow-space-2) var(--ow-space-3);
+}
+
+.ow-workspace {
+  display: flex;
+  align-items: center;
+  gap: var(--ow-space-2);
+  flex: 1 1 auto;
+  min-width: 0;
+  padding: var(--ow-space-1);
+  border-radius: var(--ow-radius-sm);
+  font-weight: 600;
+}
+
+.ow-workspace:hover {
+  background: var(--ow-bg-hover);
+}
+
+.ow-workspace-icon {
+  flex: 0 0 auto;
+  width: 20px;
+  height: 20px;
+  color: var(--ow-text);
+}
+
+.ow-workspace-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  /* The one piece of type in the interface larger than body size. The workspace
+     name labels the whole tree, so it carries weight the way a window title
+     does; at body-small it reads as just another row and the sidebar loses its
+     top. */
+  font-size: var(--ow-type-workspace);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.ow-icon-btn {
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  border-radius: var(--ow-radius-sm);
+  color: var(--ow-text-muted);
+}
+
+.ow-icon-btn:hover {
+  background: var(--ow-bg-hover);
+  color: var(--ow-text);
+}
+
+.ow-text-btn {
+  padding: var(--ow-space-1) var(--ow-space-2);
+  border-radius: var(--ow-radius-sm);
+  color: var(--ow-text-secondary);
+  font-size: var(--ow-type-body-small);
+}
+
+.ow-text-btn:hover {
+  background: var(--ow-bg-hover);
+  color: var(--ow-text);
+}
+
+.ow-nav-list {
+  margin: 0;
+  padding: 0 var(--ow-space-2);
+  list-style: none;
+}
+
+/* A 1px gap, not padding. Vertical rhythm between sidebar rows comes from the
+   gap, so row height stays independent of how much text a row holds -- and a
+   page titled with a long name does not grow into a two-line sidebar row the
+   way it would with padded rows. */
+.ow-nav-list + .ow-nav-list,
+.ow-nav-list--stacked {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.ow-sections {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.ow-nav-item {
+  display: flex;
+  align-items: center;
+  gap: var(--ow-space-2);
+  width: 100%;
+  padding: var(--ow-space-1) var(--ow-space-2);
+  border-radius: var(--ow-radius-sm);
+  color: var(--ow-text-secondary);
+  font-size: var(--ow-type-body-small);
+  text-align: left;
+}
+
+.ow-nav-item:hover {
+  background: var(--ow-bg-hover);
+  color: var(--ow-text);
+}
+
+.ow-sections {
+  flex: 1 1 auto;
+  /* Required, not decoration. A flex item defaults to min-height:auto, so it
+     refuses to shrink below its content and pushes the footer off the bottom of
+     the window. It only showed up once the footer grew past one row. */
+  min-height: 0;
+  overflow-y: auto;
+  padding: var(--ow-space-2) var(--ow-space-2) 0;
+}
+
+.ow-section + .ow-section {
+  margin-top: var(--ow-space-2);
+}
+
+.ow-section-head {
+  display: flex;
+  align-items: center;
+  gap: var(--ow-space-1);
+  width: 100%;
+  padding: var(--ow-space-1) var(--ow-space-2);
+  border-radius: var(--ow-radius-sm);
+  color: var(--ow-text-muted);
+}
+
+.ow-section-head:hover {
+  background: var(--ow-bg-hover);
+}
+
+.ow-section-title {
+  flex: 1 1 auto;
+  text-align: left;
+  font-size: var(--ow-type-body-small);
+  font-weight: 500;
+}
+
+.ow-section-count {
+  font-size: var(--ow-type-caption);
+  font-variant-numeric: tabular-nums;
+  opacity: 0.7;
+}
+
+.ow-section-body {
+  margin: var(--ow-space-1) 0 0;
+}
+
+.ow-empty-hint,
+/* An empty-page prompt. Quiet, but it is the instruction the user is reading, so
+   it sits on textMuted rather than the faint token used for handles and
+   chevrons. */
+.ow-placeholder {
+  margin: 0;
+  padding: var(--ow-space-1) var(--ow-space-2);
+  color: var(--ow-text-muted);
+  font-size: var(--ow-type-body-small);
+}
+
+/* --------------------------------------------------------------------- row */
+
+.ow-row {
+  display: flex;
+  align-items: center;
+  gap: var(--ow-space-1);
+  padding-right: var(--ow-space-2);
+  border-radius: var(--ow-radius-sm);
+  color: var(--ow-text-secondary);
+}
+
+.ow-row:hover {
+  background: var(--ow-bg-hover);
+}
+
+.ow-row[data-active] {
+  background: var(--ow-bg-selected);
+  color: var(--ow-text);
+}
+
+.ow-row-chevron {
+  display: grid;
+  place-items: center;
+  width: 16px;
+  height: 20px;
+  border-radius: var(--ow-radius-sm);
+  color: var(--ow-text-faint);
+  flex: 0 0 auto;
+}
+
+.ow-row-chevron:hover {
+  background: var(--ow-bg-active);
+}
+
+.ow-row-chevron-empty {
+  pointer-events: none;
+}
+
+.ow-row-main {
+  display: flex;
+  align-items: center;
+  gap: var(--ow-space-2);
+  flex: 1 1 auto;
+  min-width: 0;
+  padding: var(--ow-space-1) 0;
+  text-align: left;
+  font-size: var(--ow-type-body-small);
+}
+
+.ow-row-icon {
+  flex: 0 0 auto;
+  width: 16px;
+  display: grid;
+  place-items: center;
+  color: var(--ow-text-muted);
+}
+
+.ow-row-title {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/**
+ * The row's three-dot menu button.
+ *
+ * Hidden until the row is hovered or focused, but never hidden from keyboard
+ * users: ':focus-visible' reveals it so a keyboard user can still reach the
+ * menu, which is the whole point of having it.
+ */
+.ow-row-menu {
+  display: grid;
+  place-items: center;
+  width: 20px;
+  height: 20px;
+  border-radius: var(--ow-radius-sm);
+  color: var(--ow-text-muted);
+  opacity: 0;
+  flex: 0 0 auto;
+}
+
+.ow-row:hover .ow-row-menu,
+.ow-row-menu:focus-visible {
+  opacity: 1;
+}
+
+.ow-row-menu:hover {
+  background: var(--ow-bg-active);
+  color: var(--ow-text);
+}
+
+.ow-sidebar-foot {
+  flex: 0 0 auto;
+  padding: var(--ow-space-2);
+  border-top: 1px solid var(--ow-border);
+}
+
+/* ------------------------------------------------------------------ topbar */
+
+.ow-main {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  height: 100%;
+}
+
+.ow-topbar {
+  display: flex;
+  align-items: center;
+  gap: var(--ow-space-2);
+  height: var(--ow-size-top-bar-height);
+  padding: 0 var(--ow-space-3);
+  background: var(--ow-bg-overlay);
+  border-bottom: 1px solid var(--ow-border);
+  flex: 0 0 auto;
+}
+
+.ow-breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: var(--ow-space-2);
+  flex: 1 1 auto;
+  min-width: 0;
+  color: var(--ow-text-secondary);
+  font-size: var(--ow-type-body-small);
+}
+
+.ow-crumb {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ow-crumb-icon {
+  flex: 0 0 auto;
+}
+
+/* A crumb is a button that looks like text, so the reset is the bulk of it.
+   Without it the browser's button styling makes every ancestor look pressed. */
+.ow-crumb-chain {
+  display: flex;
+  align-items: center;
+  gap: var(--ow-space-2);
+  min-width: 0;
+}
+
+button.ow-crumb {
+  appearance: none;
+  background: none;
+  border: none;
+  padding: var(--ow-space-1);
+  margin: 0;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+  border-radius: var(--ow-radius-small, 4px);
+  flex: 0 1 auto;
+}
+
+button.ow-crumb:hover {
+  background: var(--ow-bg-hover);
+}
+
+/* The current page is not a link, so it does not get a hover that promises
+   navigation to where you already are. */
+.ow-crumb-current {
+  color: var(--ow-text-primary);
+  font-weight: var(--ow-type-weight-medium, 500);
+}
+
+.ow-crumb-sep {
+  flex: 0 0 auto;
+  color: var(--ow-text-tertiary);
+}
+
+.ow-topbar-right {
+  display: flex;
+  align-items: center;
+  gap: var(--ow-space-1);
+  flex: 0 0 auto;
+}
+
+/* --------------------------------------------------------------- page view */
+
+.ow-page-scroll {
+  flex: 1 1 auto;
+  overflow-y: auto;
+}
+
+.ow-page {
+  /* The measure is what makes long-form reading comfortable. Pinned to a
+     measured value rather than left to the viewport. */
+  /* Driven by the content-width preference. Falls back to the design token so
+     the default still matches the spec when the variable is unset. */
+  max-width: var(--ow-content-width, var(--ow-size-content-width));
+  margin: 0 auto;
+  /* Asymmetric on purpose: more air above the title than beside it. The title
+     needs somewhere to sit, and equal padding reads as a document rather than a
+     page. The deep bottom padding lets the last block scroll up into open space
+     instead of sitting under a hard edge. */
+  padding: var(--ow-space-page-top) var(--ow-space-page-side) 40vh;
+}
+
+.ow-page-empty {
+  display: grid;
+  place-items: center;
+  height: 100%;
+  color: var(--ow-text-muted);
+}
+
+.ow-cover-placeholder {
+  height: 0;
+}
+
+.ow-page-title {
+  margin: 0 0 var(--ow-space-page-title-gap);
+  font-size: var(--ow-type-title);
+  font-weight: 700;
+  /* Tight leading and tight tracking on large type. At 40px a 1.2 line-height
+     leaves a visible gap under the last line that no amount of margin below can
+     hide, and at -0.01em the words still read as separate. */
+  line-height: 1.18;
+  letter-spacing: -0.022em;
+}
+
+.ow-blocks {
+  display: flex;
+  flex-direction: column;
+}
+
+.ow-block {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--ow-space-2);
+  padding: 2px 0;
+  font-size: var(--ow-type-body);
+  line-height: 1.5;
+}
+
+.ow-block-gutter {
+  flex: 0 0 auto;
+  /* min-width, not width: a numbered item's marker needs a little more room
+     than an icon, and a fixed width clipped the digits. The floor keeps every
+     other block's text on exactly the same left edge as before. */
+  min-width: 18px;
+  margin-top: 4px;
+  color: var(--ow-text-faint);
+  /* The marker is content, so it stays visible; only the drag affordance fades. */
+  opacity: 0;
+}
+
+.ow-block-gutter:has(.ow-block-marker) {
+  opacity: 1;
+}
+
+.ow-block:hover .ow-block-gutter {
+  opacity: 1;
+}
+
+.ow-block-text {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.ow-block-checkbox {
+  margin-top: 5px;
+  flex: 0 0 auto;
+}
+
+.ow-divider {
+  width: 100%;
+  margin: var(--ow-space-2) 0;
+  border: none;
+  border-top: 1px solid var(--ow-border-strong);
+}
+
+
+/* Block-type emphasis. Headings are larger and tighter, matching the reference. */
+.ow-block-heading1 .ow-block-text {
+  font-size: var(--ow-type-h1);
+  font-weight: 600;
+  line-height: 1.3;
+  margin-top: var(--ow-space-6);
+}
+
+.ow-block-heading2 .ow-block-text {
+  font-size: var(--ow-type-h2);
+  font-weight: 600;
+  line-height: 1.3;
+  margin-top: var(--ow-space-5);
+}
+
+.ow-block-heading3 .ow-block-text {
+  font-size: var(--ow-type-h3);
+  font-weight: 600;
+  line-height: 1.3;
+  margin-top: var(--ow-space-4);
+}
+
+/* The bullet used to be a ::before on the list item's own text, which put it
+ * inside the content column and shifted the text right of every paragraph. The
+ * marker in the gutter owns this now, in the same slot the drag handle uses, so
+ * list text lines up with paragraph text the way the reference does. */
+
+.ow-block-quote {
+  border-left: 2px solid var(--ow-border-strong);
+  padding-left: var(--ow-space-3);
+  color: var(--ow-text-secondary);
+}
+
+/* The code panel, drawn once.
+ *
+ * `.ow-block-mono` sets a background, a border and padding on the editable line,
+ * and this rule used to set a background, a radius and padding on the block
+ * around it -- so a code block rendered as a panel inside a panel, with a visible
+ * seam between them. The panel belongs to the block, which is the thing with the
+ * margin and the gutter; the line inside it only sets the typeface. */
+.ow-block-code {
+  font-family: var(--ow-type-font-mono);
+  font-size: var(--ow-type-body-small);
+}
+
+/* -------------------------------------------------------------- list markers */
+
+/* Numbered lists renumber themselves.
+ *
+ * A CSS counter rather than a digit computed in the model: the browser renumbers
+ * when a block is dragged, indented or deleted, with no chance of the stored
+ * numbers and the visible ones disagreeing. A list that says "3." where the
+ * reader can see two items above it is worse than no numbers. */
+.ow-blocks {
+  counter-reset: ow-num;
+}
+
+.ow-block-numberedListItem {
+  counter-increment: ow-num;
+}
+
+.ow-block-marker {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  /* Left-aligned, not right: right-aligning puts "1." further left than the
+     bullet beside it, so the two kinds of list item do not share a left edge. */
+  justify-content: flex-start;
+  /* Wide enough for two digits, so "10." does not shift the text when it
+     arrives and the whole column of numbers jumps sideways. */
+  min-width: 1.35em;
+  color: var(--ow-text-muted);
+  user-select: none;
+}
+
+.ow-block-bulletedListItem .ow-block-marker::before {
+  content: '\2022';
+}
+
+.ow-block-numberedListItem .ow-block-marker::before {
+  content: counter(ow-num) '.';
+}
+
+/* ---------------------------------------------------------------- appearance */
+
+.ow-appearance {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ow-space-1);
+  padding: var(--ow-space-2) 0 0;
+}
+
+.ow-appearance-label {
+  color: var(--ow-text-faint);
+  font-size: var(--ow-type-caption);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+/* Three states side by side rather than a switch, because "System" has to be
+   selectable as something the user actually chose. A switch would make System
+   unreachable without a cycle nobody can predict. */
+.ow-appearance-choices {
+  display: flex;
+  gap: var(--ow-space-1);
+  padding: 2px;
+  border-radius: var(--ow-radius-md);
+  background: var(--ow-bg-sunken);
+}
+
+.ow-appearance-choice {
+  flex: 1 1 0;
+  min-width: 0;
+  padding: var(--ow-space-1) var(--ow-space-2);
+  border-radius: var(--ow-radius-sm);
+  color: var(--ow-text-muted);
+  font-size: var(--ow-type-caption);
+  text-align: center;
+  transition: background-color var(--ow-motion-fast-duration) var(--ow-motion-fast-easing),
+    color var(--ow-motion-fast-duration) var(--ow-motion-fast-easing);
+}
+
+.ow-appearance-choice:hover {
+  color: var(--ow-text);
+}
+
+.ow-appearance-choice[aria-pressed='true'] {
+  background: var(--ow-bg-overlay);
+  color: var(--ow-text);
+  box-shadow: var(--ow-elevation-popover);
+}
+
+/* ---------------------------------------------------------------- quick find */
+
+/* High on the scrim, not centred. A search box in the middle of the window covers
+   the content you are searching for; near the top it does not. */
+.ow-find {
+  align-self: flex-start;
+  width: min(560px, calc(100vw - var(--ow-space-16)));
+  margin-top: 12vh;
+  padding: var(--ow-space-2);
+  background: var(--ow-bg-overlay);
+  border: 1px solid var(--ow-border);
+  border-radius: var(--ow-radius-lg);
+  box-shadow: var(--ow-elevation-modal);
+}
+
+.ow-find-input {
+  width: 100%;
+  padding: var(--ow-space-3);
+  border: 0;
+  border-radius: var(--ow-radius-md);
+  background: transparent;
+  color: var(--ow-text);
+  font-family: var(--ow-type-font);
+  font-size: var(--ow-type-body);
+}
+
+.ow-find-input:focus {
+  outline: none;
+}
+
+.ow-find-results {
+  margin: var(--ow-space-1) 0 0;
+  padding: 0;
+  list-style: none;
+  max-height: 46vh;
+  overflow-y: auto;
+}
+
+/* An overlay, not a solid fill, so it uses the same row highlight as the rest of
+   the interface instead of introducing a second selection language. */
+.ow-find-item {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  padding: var(--ow-space-2) var(--ow-space-3);
+  border-radius: var(--ow-radius-sm);
+  cursor: pointer;
+}
+
+.ow-find-item.is-active {
+  background: var(--ow-bg-selected);
+}
+
+.ow-find-item-title {
+  color: var(--ow-text);
+  font-size: var(--ow-type-body);
+}
+
+.ow-find-item-snippet {
+  color: var(--ow-text-muted);
+  font-size: var(--ow-type-caption);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ow-find-summary {
+  margin: var(--ow-space-2) 0 0;
+  padding: 0 var(--ow-space-3) var(--ow-space-1);
+  color: var(--ow-text-muted);
+  font-size: var(--ow-type-caption);
+}
+
+/* Editable in place, which is why it is a textbox and not a heading the user can
+   only read. The placeholder shows only when the title is genuinely empty,
+   rather than a separate "Untitled" string that has to be deleted before typing:
+   a field pre-filled with placeholder text is a field whose contents the user has
+   to clear first. */
+.ow-page-title:focus {
+  outline: none;
+}
+
+.ow-page-title:empty::before {
+  content: attr(data-placeholder);
+  color: var(--ow-text-faint);
+  pointer-events: none;
+}
+
+/* ------------------------------------------------------- appearance controls */
+
+/* Text size scales the page body rather than the root font, so the sidebar and
+   chrome keep their size. Scaling everything at once makes the sidebar unreadable
+   at large and leaves the page looking unchanged at small. */
+.ow-page {
+  font-size: calc(1em * var(--ow-scale, 1));
+}
+
+/* An accent swatch is a colour chip with a name, not a bare circle: a person
+   who cannot tell teal from green still needs to find the one they chose. The
+   pressed ring is drawn with a box-shadow rather than a border so it does not
+   change the swatch's size when selected. */
+.ow-accents {
+  display: flex;
+  gap: var(--ow-space-2);
+  padding: 2px 0;
+}
+
+.ow-accent {
+  width: 22px;
+  height: 22px;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  padding: 0;
+}
+
+.ow-accent[aria-pressed='true'] {
+  box-shadow: 0 0 0 2px var(--ow-bg), 0 0 0 4px var(--ow-text-secondary);
+}
+
+.ow-accent:focus-visible {
+  outline: 2px solid var(--ow-focus, var(--ow-text));
+  outline-offset: 2px;
+}
+
+.ow-zoom {
+  display: flex;
+  align-items: center;
+  gap: var(--ow-space-1);
+}
+
+.ow-zoom-value {
+  min-width: 44px;
+  text-align: center;
+  color: var(--ow-text-secondary);
+  font-size: var(--ow-type-caption);
+  font-variant-numeric: tabular-nums;
+}
+
+.ow-zoom .ow-text-btn:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+/* ------------------------------------------------------------ resizable sidebar */
+
+/* A real separator, not a border: role and tabIndex make it announce and accept
+   focus, and a 8px hit area over a 1px line is what makes it grabbable at all.
+   Positioned outside the sidebar so it does not eat the sidebar's own width. */
+.ow-sidebar {
+  position: relative;
+}
+
+.ow-sidebar-grip {
+  position: absolute;
+  top: 0;
+  right: -4px;
+  width: 8px;
+  height: 100%;
+  cursor: col-resize;
+  z-index: 2;
+}
+
+.ow-sidebar-grip:hover,
+.ow-sidebar-grip:focus-visible {
+  background: var(--ow-bg-active);
+}
+
+.ow-sidebar-grip:focus-visible {
+  outline: 2px solid var(--ow-text-secondary);
+  outline-offset: -2px;
+}
+
+/* While dragging, the pointer must not select the text it passes over. */
+body.ow-resizing {
+  cursor: col-resize;
+  user-select: none;
+}
+
+/* ------------------------------------------------------- per-page appearance */
+
+/* Driven by data- attributes on the article rather than inline styles, so the
+   choices live in one stylesheet and a page can never end up with a width no
+   rule knows about. */
+.ow-page[data-width='full'] {
+  max-width: none;
+  padding-left: var(--ow-space-4);
+  padding-right: var(--ow-space-4);
+}
+
+.ow-page[data-font='serif'] {
+  font-family: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
+}
+
+.ow-page[data-font='mono'] {
+  font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, monospace;
+}
+
+.ow-page[data-small-text='true'] {
+  --ow-scale: 0.88;
+}
+
+/* ------------------------------------------------------ keyboard cheat sheet */
+
+/* Generated from the registry, so it lists what the commands do rather than
+   what a hand-kept table claims. */
+.ow-overlay {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--ow-space-6);
+  /* The same scrim the ui-kit's own overlays use, so a dialog in this
+     application looks like a dialog in the kit. */
+  background: color-mix(in srgb, var(--ow-text) 22%, transparent);
+  z-index: 200;
+}
+
+.ow-dialog {
+  display: flex;
+  flex-direction: column;
+  width: min(560px, 100%);
+  max-height: 84vh;
+  border: 1px solid var(--ow-border);
+  border-radius: var(--ow-radius-lg);
+  /* `--ow-bg-overlay`, not a token that does not exist: an unknown variable
+     makes the whole declaration invalid, and the card ends up transparent with
+     the page showing through it. */
+  background: var(--ow-bg-overlay);
+  box-shadow: var(--ow-elevation-modal, 0 18px 48px rgba(15, 23, 42, 0.24));
+  overflow: hidden;
+}
+
+.ow-dialog-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--ow-space-3) var(--ow-space-4);
+  border-bottom: 1px solid var(--ow-border);
+}
+
+.ow-dialog-title {
+  margin: 0;
+  font-size: var(--ow-type-title-small, 15px);
+  font-weight: var(--ow-type-weight-semibold, 600);
+}
+
+.ow-dialog-body {
+  padding: var(--ow-space-3) var(--ow-space-4) var(--ow-space-4);
+  overflow-y: auto;
+}
+
+.ow-sheet + .ow-sheet {
+  margin-top: var(--ow-space-4);
+}
+
+.ow-sheet-head {
+  margin: 0 0 var(--ow-space-2);
+  color: var(--ow-text-faint);
+  font-size: var(--ow-type-caption);
+  font-weight: var(--ow-type-weight-semibold, 600);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.ow-sheet-list {
+  margin: 0;
+}
+
+.ow-sheet-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--ow-space-4);
+  padding: 3px 0;
+}
+
+.ow-sheet-title {
+  margin: 0;
+  color: var(--ow-text);
+  font-size: var(--ow-type-body-small);
+}
+
+.ow-sheet-keys {
+  display: flex;
+  align-items: center;
+  gap: var(--ow-space-1);
+  margin: 0;
+  flex: 0 0 auto;
+}
+
+.ow-sheet-keys kbd {
+  padding: 2px 6px;
+  border: 1px solid var(--ow-border);
+  border-bottom-width: 2px;
+  border-radius: var(--ow-radius-sm);
+  background: var(--ow-bg-sunken);
+  color: var(--ow-text-secondary);
+  font-family: inherit;
+  font-size: var(--ow-type-caption);
+  white-space: nowrap;
+}
+
+/* The Mac spelling is secondary on a non-Mac, so it reads as a note rather
+   than as an equal second binding. */
+.ow-sheet-alt {
+  opacity: 0.55;
+}
+
+/* ------------------------------------------------------- sidebar row dragging */
+
+/* The dragged row dims rather than disappearing: a drag source that vanishes
+   under the cursor gives no indication of what is being moved. */
+.ow-row[data-dragging='true'] {
+  opacity: 0.4;
+}
+
+/* Above and below are a rule; into is a fill. Three outcomes need three
+   different signals, because a user cannot read intent off a position alone. */
+.ow-row[data-drop='above'] {
+  box-shadow: inset 0 2px 0 var(--ow-accent);
+}
+
+.ow-row[data-drop='below'] {
+  box-shadow: inset 0 -2px 0 var(--ow-accent);
+}
+
+.ow-row[data-drop='into'] {
+  background: color-mix(in srgb, var(--ow-accent) 16%, transparent);
+  border-radius: var(--ow-radius-sm);
+}
+
+/* ------------------------------------------------- page properties (db rows) */
+
+/* Above the title and outside .ow-page: properties belong to the row, not to
+   the document body, so they must not scale with the page's own font or width
+   choices. A property that reflowed with the body would move every time someone
+   changed a reading preference. */
+.ow-props {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  max-width: 900px;
+  margin: var(--ow-space-4) auto 0;
+  padding: 0 var(--ow-space-4);
+}
+
+.ow-props-row {
+  display: grid;
+  grid-template-columns: 140px 1fr;
+  align-items: center;
+  gap: var(--ow-space-3);
+  min-height: 30px;
+  padding: 2px 6px;
+  border-radius: var(--ow-radius-sm);
+}
+
+.ow-props-row:hover {
+  background: var(--ow-bg-hover);
+}
+
+.ow-props-name {
+  color: var(--ow-text-secondary);
+  font-size: var(--ow-type-body-small);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* -------------------------------------------------------------- settings sheet */
+
+/* The settings groups laid out as a sheet. Two columns on a wide dialog, one on
+   a narrow one, because six stacked groups is a column nobody scrolls past. */
+.ow-settings {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: var(--ow-space-5) var(--ow-space-6);
+  align-items: start;
+}
+
+.ow-overlay--sheet .ow-dialog {
+  width: min(680px, 100%);
+}
+
+/* The cheat sheet opens from inside Settings, so both backdrops are in the DOM
+   at once. Ordering by z-index rather than by source order, because "the dialog
+   that opened last is the one you can see and click" has to stay true when the
+   two blocks are reordered. */
+.ow-overlay--above {
+  z-index: 210;
+}
+
+/* ------------------------------------------------------- version history panel */
+
+.ow-history {
+  width: min(760px, 100%);
+}
+
+.ow-history-body {
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  gap: var(--ow-space-4);
+  min-height: 240px;
+}
+
+.ow-history-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  max-height: 320px;
+  overflow-y: auto;
+  border-right: 1px solid var(--ow-border);
+  padding-right: var(--ow-space-3);
+}
+
+.ow-history-item {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  width: 100%;
+  padding: var(--ow-space-2);
+  border: none;
+  border-radius: var(--ow-radius-sm);
+  background: none;
+  color: var(--ow-text);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.ow-history-item:hover {
+  background: var(--ow-bg-hover);
+}
+
+.ow-history-item[aria-selected='true'] {
+  background: var(--ow-bg-selected);
+}
+
+.ow-history-when {
+  font-size: var(--ow-type-body-small);
+}
+
+.ow-history-label {
+  color: var(--ow-text-faint);
+  font-size: var(--ow-type-caption);
+}
+
+.ow-history-empty {
+  color: var(--ow-text-faint);
+  font-size: var(--ow-type-body-small);
+  padding: var(--ow-space-2);
+}
+
+.ow-history-preview {
+  margin: 0;
+  padding: var(--ow-space-3);
+  border: 1px solid var(--ow-border);
+  border-radius: var(--ow-radius-sm);
+  background: var(--ow-bg-sunken);
+  color: var(--ow-text-secondary);
+  font-family: var(--ow-type-font-mono);
+  font-size: var(--ow-type-caption);
+  white-space: pre-wrap;
+  overflow: auto;
+  max-height: 320px;
+}
+
+.ow-history-error {
+  margin: 0;
+  padding: var(--ow-space-2) var(--ow-space-4);
+  background: var(--ow-bg-code);
+  color: var(--ow-danger);
+  font-size: var(--ow-type-body-small);
+}
+
+.ow-dialog-foot {
+  display: flex;
+  justify-content: flex-end;
+  padding: var(--ow-space-3) var(--ow-space-4);
+  border-top: 1px solid var(--ow-border);
+}
+
+/* ------------------------------------------------ page lock, edited, backlinks */
+
+/* The meta line under the title. One line, quiet, and it carries three things
+   the reader wants to know without opening a menu: that the page is locked,
+   who last touched it, and when. */
+.ow-page-meta {
+  display: flex;
+  align-items: center;
+  gap: var(--ow-space-3);
+  min-height: 20px;
+  margin-bottom: var(--ow-space-2);
+  color: var(--ow-text-faint);
+  font-size: var(--ow-type-caption);
+}
+
+.ow-page-locked {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--ow-danger);
+}
+
+/* Backlinks: the pages that mention this one. Above the content rather than
+   below, because a backlink you have to scroll to the end to find is not a
+   backlink, it is a footnote. */
+.ow-backlinks {
+  max-width: 900px;
+  margin: 0 auto var(--ow-space-3);
+  padding: 0 var(--ow-space-4);
+}
+
+.ow-backlinks-head {
+  margin: 0 0 var(--ow-space-1);
+  color: var(--ow-text-faint);
+  font-size: var(--ow-type-caption);
+  font-weight: var(--ow-type-weight-semibold, 600);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.ow-backlinks-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.ow-backlinks-item {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  width: 100%;
+  padding: var(--ow-space-1) var(--ow-space-2);
+  border: none;
+  border-radius: var(--ow-radius-sm);
+  background: none;
+  color: var(--ow-text);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.ow-backlinks-item:hover {
+  background: var(--ow-bg-hover);
+}
+
+.ow-backlinks-title {
+  font-size: var(--ow-type-body-small);
+}
+
+.ow-backlinks-snippet {
+  color: var(--ow-text-faint);
+  font-size: var(--ow-type-caption);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ow-appearance-input {
+  width: 100%;
+  padding: 5px 8px;
+  border: 1px solid var(--ow-border);
+  border-radius: var(--ow-radius-sm);
+  background: var(--ow-bg);
+  color: var(--ow-text);
+  font: inherit;
+  font-size: var(--ow-type-body-small);
+}
+
+.ow-appearance-input:focus-visible {
+  outline: 2px solid var(--ow-accent);
+  outline-offset: 1px;
+}
+
+/* ------------------------------------------------------------ settings dialog */
+
+/* A dialog with a navigation rail, not a scroll of labelled groups.
+   The old one stacked six groups in a sheet, which read as a settings panel
+   with the page list wedged into it, and which meant the thing you wanted was
+   always somewhere below the fold. */
+.ow-overlay--settings {
+  background: color-mix(in srgb, var(--ow-text) 26%, transparent);
+}
+
+.ow-settings-card {
+  flex-direction: row;
+  align-items: stretch;
+  width: min(920px, 100%);
+  height: min(640px, 88vh);
+  max-height: 88vh;
+}
+
+.ow-settings-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  width: 240px;
+  flex: 0 0 240px;
+  padding: var(--ow-space-3) var(--ow-space-2);
+  border-right: 1px solid var(--ow-border);
+  background: var(--ow-bg-sidebar);
+  overflow-y: auto;
+}
+
+.ow-settings-nav-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--ow-space-2);
+  padding: 0 var(--ow-space-2) var(--ow-space-3);
+  margin-bottom: var(--ow-space-1);
+  border-bottom: 1px solid var(--ow-border);
+}
+
+.ow-settings-tab {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  width: 100%;
+  padding: var(--ow-space-2) var(--ow-space-3);
+  border: none;
+  border-radius: var(--ow-radius-sm);
+  background: none;
+  color: var(--ow-text);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.ow-settings-tab:hover {
+  background: var(--ow-bg-hover);
+}
+
+.ow-settings-tab.is-active {
+  background: var(--ow-bg-raised);
+  box-shadow: inset 2px 0 0 var(--ow-accent);
+}
+
+.ow-settings-tab-label {
+  font-size: var(--ow-type-body-small);
+  font-weight: var(--ow-type-weight-medium, 500);
+}
+
+.ow-settings-tab-hint {
+  color: var(--ow-text-faint);
+  font-size: var(--ow-type-caption);
+  line-height: 1.35;
+}
+
+.ow-settings-tab--nested {
+  /* The indent is a margin, so the width has to give it back: at width 100% the
+     nested row is wider than the rail, and the rail grows a horizontal
+     scrollbar under a dialog that is supposed to have none. */
+  width: calc(100% - var(--ow-space-3));
+  margin-left: var(--ow-space-3);
+  border-left: 1px solid var(--ow-border);
+  border-radius: 0 var(--ow-radius-sm) var(--ow-radius-sm) 0;
+}
+
+.ow-settings-pane {
+  flex: 1 1 auto;
+  min-width: 0;
+  padding: var(--ow-space-5) var(--ow-space-6);
+  overflow-y: auto;
+}
+
+.ow-settings-title {
+  margin: 0 0 var(--ow-space-2);
+  /* Not `--ow-type-title`: that is the page title's size, measured for a
+     41px heading in the content area. A settings pane is a panel, and a
+     41px heading in a panel reads as a mistake. */
+  font-size: 20px;
+  line-height: 1.2;
+  font-weight: var(--ow-type-weight-semibold, 600);
+}
+
+.ow-settings-lede {
+  margin: 0 0 var(--ow-space-5);
+  max-width: 62ch;
+  color: var(--ow-text-muted);
+  font-size: var(--ow-type-body-small);
+  line-height: 1.55;
+}
+
+/* A labelled row: a label, a control, and a note underneath. */
+.ow-field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ow-space-2);
+  margin-bottom: var(--ow-space-5);
+  max-width: 520px;
+}
+
+.ow-field-label {
+  color: var(--ow-text-faint);
+  font-size: var(--ow-type-caption);
+  font-weight: var(--ow-type-weight-semibold, 600);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.ow-field-input {
+  width: 100%;
+  padding: 7px 10px;
+  border: 1px solid var(--ow-border);
+  border-radius: var(--ow-radius-sm);
+  background: var(--ow-bg);
+  color: var(--ow-text);
+  font: inherit;
+  font-size: var(--ow-type-body-small);
+}
+
+.ow-field-input:focus-visible {
+  outline: 2px solid var(--ow-accent);
+  outline-offset: 1px;
+}
+
+.ow-field-code {
+  display: block;
+  padding: 7px 10px;
+  border: 1px solid var(--ow-border);
+  border-radius: var(--ow-radius-sm);
+  background: var(--ow-bg-sunken);
+  color: var(--ow-text-muted);
+  font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, monospace;
+  font-size: var(--ow-type-caption);
+  word-break: break-all;
+}
+
+.ow-field-note {
+  margin: 0;
+  color: var(--ow-text-faint);
+  font-size: var(--ow-type-caption);
+  line-height: 1.5;
+}
+
+.ow-field-note--good {
+  color: var(--ow-text);
+}
+
+/* Segmented choices, the same shape as the old appearance groups but with a
+   border so they read as one control rather than as loose buttons. */
+.ow-choices {
+  display: flex;
+  gap: var(--ow-space-1);
+}
+
+.ow-choices--wrap {
+  flex-wrap: wrap;
+}
+
+.ow-choice {
+  min-width: 44px;
+  padding: 6px 12px;
+  border: 1px solid var(--ow-border);
+  border-radius: var(--ow-radius-sm);
+  background: var(--ow-bg);
+  color: var(--ow-text);
+  font: inherit;
+  font-size: var(--ow-type-body-small);
+  cursor: pointer;
+}
+
+.ow-choice:hover:not(:disabled) {
+  background: var(--ow-bg-hover);
+}
+
+.ow-choice[aria-pressed='true'] {
+  border-color: var(--ow-accent);
+  background: var(--ow-accent-soft, var(--ow-bg-hover));
+  color: var(--ow-text);
+  font-weight: var(--ow-type-weight-medium, 500);
+}
+
+.ow-choice:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.ow-choice--wide {
+  min-width: 180px;
+  text-align: left;
+}
+
+.ow-accents {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--ow-space-2);
+}
+
+.ow-accent {
+  width: 22px;
+  height: 22px;
+  border: 2px solid transparent;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.ow-accent[aria-pressed='true'] {
+  border-color: var(--ow-text);
+  box-shadow: 0 0 0 2px var(--ow-bg-raised);
+}
+
+.ow-zoom {
+  display: flex;
+  align-items: center;
+  gap: var(--ow-space-2);
+}
+
+.ow-zoom-value {
+  min-width: 48px;
+  color: var(--ow-text-muted);
+  font-size: var(--ow-type-body-small);
+  text-align: center;
+}
+
+/* The status table in Files & Sync: a label and a number, one row each. */
+.ow-status {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border: 1px solid var(--ow-border);
+  border-radius: var(--ow-radius-sm);
+  overflow: hidden;
+}
+
+.ow-status li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--ow-space-3);
+  padding: var(--ow-space-2) var(--ow-space-3);
+  font-size: var(--ow-type-body-small);
+}
+
+.ow-status li + li {
+  border-top: 1px solid var(--ow-border);
+}
+
+.ow-status strong {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Advanced: a card per feature that needs explaining before it is useful. */
+.ow-advanced-card {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  grid-template-areas: 'title more' 'note more';
+  gap: 2px var(--ow-space-3);
+  width: 100%;
+  max-width: 520px;
+  padding: var(--ow-space-3) var(--ow-space-4);
+  border: 1px solid var(--ow-border);
+  border-radius: var(--ow-radius-sm);
+  background: var(--ow-bg);
+  color: var(--ow-text);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.ow-advanced-card:hover {
+  background: var(--ow-bg-hover);
+}
+
+.ow-advanced-title {
+  grid-area: title;
+  font-size: var(--ow-type-body);
+  font-weight: var(--ow-type-weight-semibold, 600);
+}
+
+.ow-advanced-note {
+  grid-area: note;
+  color: var(--ow-text-faint);
+  font-size: var(--ow-type-caption);
+  line-height: 1.45;
+}
+
+.ow-advanced-more {
+  grid-area: more;
+  align-self: center;
+  color: var(--ow-accent);
+  font-size: var(--ow-type-body-small);
+}
+
+.ow-back {
+  margin-bottom: var(--ow-space-3);
+  padding: 0;
+  border: none;
+  background: none;
+  color: var(--ow-text-faint);
+  font: inherit;
+  font-size: var(--ow-type-caption);
+  cursor: pointer;
+}
+
+.ow-back:hover {
+  color: var(--ow-text);
+}
+
+/* A switch, for the one setting that is on or off rather than a choice. */
+.ow-toggle {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--ow-space-3);
+  cursor: pointer;
+}
+
+.ow-toggle input {
+  width: 16px;
+  height: 16px;
+  margin-top: 2px;
+  accent-color: var(--ow-accent);
+}
+
+.ow-toggle-text {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.ow-toggle-text span {
+  color: var(--ow-text-faint);
+  font-size: var(--ow-type-caption);
+  line-height: 1.45;
+}
+
+.ow-key-row {
+  display: flex;
+  gap: var(--ow-space-2);
+}
+
+.ow-key-row .ow-field-input {
+  flex: 1 1 auto;
+}
+
+/* Narrow windows: the rail goes on top rather than squeezing the pane. */
+@media (max-width: 640px) {
+  .ow-settings-card {
+    flex-direction: column;
+    height: auto;
+    max-height: 86vh;
+  }
+
+  .ow-settings-nav {
+    width: 100%;
+    flex: 0 0 auto;
+    flex-direction: row;
+    flex-wrap: wrap;
+    border-right: none;
+    border-bottom: 1px solid var(--ow-border);
+  }
+
+  .ow-settings-nav-head {
+    width: 100%;
+    border-bottom: none;
+  }
+
+  .ow-settings-tab {
+    width: auto;
+  }
+
+  .ow-settings-tab-hint {
+    display: none;
+  }
+}
+
+/* --------------------------------------------------------------- the AI bubble */
+
+/* A small circle in the bottom-left corner. It only exists when AI is on with
+   a key of the user's own, or when the debug mode is on so it can be looked
+   at. A permanent AI button in the corner is an application asking to be used
+   by a machine rather than by a person. */
+.ow-ai-bubble {
+  position: fixed;
+  left: var(--ow-space-5);
+  bottom: var(--ow-space-5);
+  z-index: 150;
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 1px solid var(--ow-border);
+  border-radius: 50%;
+  /* White into blue, so it reads as the light source rather than as another
+     grey control. The first stop is the overlay token rather than a literal
+     white, so it does not glare in the dark theme. */
+  background: linear-gradient(
+    160deg,
+    var(--ow-bg-overlay) 0%,
+    color-mix(in srgb, var(--ow-accent) 38%, white) 55%,
+    var(--ow-accent) 100%
+  );
+  color: var(--ow-text);
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.18);
+  transition: transform var(--ow-motion-fast-duration, 120ms) var(--ow-motion-fast-easing, ease);
+}
+
+.ow-ai-bubble:hover {
+  transform: translateY(-1px);
+}
+
+.ow-ai-bubble.is-open {
+  transform: rotate(90deg);
+}
+
+.ow-ai-bubble:focus-visible {
+  outline: 2px solid var(--ow-accent);
+  outline-offset: 2px;
+}
+
+/* The panel it opens. It sits above the bubble and never grows past the
+   window, whatever the screen. */
+.ow-ai-panel {
+  position: fixed;
+  left: var(--ow-space-5);
+  bottom: calc(var(--ow-space-5) + 52px);
+  z-index: 150;
+  display: flex;
+  flex-direction: column;
+  width: min(380px, calc(100vw - var(--ow-space-8)));
+  max-height: min(520px, calc(100vh - 140px));
+  border: 1px solid var(--ow-border);
+  border-radius: var(--ow-radius-lg);
+  background: var(--ow-bg-overlay);
+  box-shadow: var(--ow-elevation-modal, 0 18px 48px rgba(15, 23, 42, 0.24));
+  overflow: hidden;
+}
+
+.ow-ai-panel-head {
+  display: flex;
+  align-items: center;
+  gap: var(--ow-space-2);
+  padding: var(--ow-space-2) var(--ow-space-3);
+  border-bottom: 1px solid var(--ow-border);
+}
+
+.ow-ai-panel-title {
+  font-size: var(--ow-type-body-small);
+  font-weight: var(--ow-type-weight-semibold, 600);
+}
+
+.ow-ai-panel-model {
+  flex: 1 1 auto;
+  overflow: hidden;
+  color: var(--ow-text-faint);
+  font-size: var(--ow-type-caption);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ow-ai-off {
+  padding: var(--ow-space-3);
+  border-bottom: 1px solid var(--ow-border);
+}
+
+.ow-ai-off p {
+  margin: 0 0 var(--ow-space-2);
+  color: var(--ow-text-muted);
+  font-size: var(--ow-type-caption);
+  line-height: 1.5;
+}
+
+.ow-ai-log {
+  flex: 1 1 auto;
+  min-height: 120px;
+  padding: var(--ow-space-3);
+  overflow-y: auto;
+}
+
+.ow-ai-hint {
+  margin: 0;
+  color: var(--ow-text-faint);
+  font-size: var(--ow-type-caption);
+}
+
+.ow-ai-message {
+  margin-bottom: var(--ow-space-2);
+  padding: var(--ow-space-2) var(--ow-space-3);
+  border-radius: var(--ow-radius-sm);
+  font-size: var(--ow-type-body-small);
+  line-height: 1.5;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.ow-ai-message--you {
+  background: var(--ow-bg-sunken);
+}
+
+.ow-ai-message--ai {
+  background: color-mix(in srgb, var(--ow-accent) 8%, transparent);
+  border: 1px solid color-mix(in srgb, var(--ow-accent) 20%, transparent);
+}
+
+.ow-ai-pending {
+  color: var(--ow-text-faint);
+  font-style: italic;
+}
+
+.ow-ai-error {
+  padding: var(--ow-space-2);
+  border: 1px solid color-mix(in srgb, var(--ow-danger) 40%, transparent);
+  border-radius: var(--ow-radius-sm);
+  color: var(--ow-danger);
+  font-size: var(--ow-type-caption);
+}
+
+/* The diagnostics readout, shown only in debug mode. */
+.ow-ai-debug {
+  padding: var(--ow-space-2) var(--ow-space-3);
+  border-top: 1px solid var(--ow-border);
+  background: var(--ow-bg-sunken);
+  font-size: var(--ow-type-caption);
+}
+
+.ow-ai-debug-row {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--ow-space-2);
+  color: var(--ow-text-faint);
+}
+
+.ow-ai-debug-row code {
+  color: var(--ow-text-muted);
+  font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, monospace;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ow-ai-form {
+  display: flex;
+  gap: var(--ow-space-2);
+  padding: var(--ow-space-2) var(--ow-space-3) var(--ow-space-3);
+  border-top: 1px solid var(--ow-border);
+}
+
+.ow-ai-input {
+  flex: 1 1 auto;
+  min-width: 0;
+  padding: 7px 10px;
+  border: 1px solid var(--ow-border);
+  border-radius: var(--ow-radius-sm);
+  background: var(--ow-bg);
+  color: var(--ow-text);
+  font: inherit;
+  font-size: var(--ow-type-body-small);
+}
+
+.ow-ai-input:focus-visible {
+  outline: 2px solid var(--ow-accent);
+  outline-offset: 1px;
+}
+
+.ow-ai-send {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: none;
+  border-radius: var(--ow-radius-sm);
+  background: var(--ow-accent);
+  color: white;
+  cursor: pointer;
+}
+
+.ow-ai-send:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+/* ------------------------------------------------- equations, tags, wiki links */
+
+/* An equation is drawn as an equation. The source is in the tooltip, because
+   sometimes that is what you want to see. */
+.ow-inline--equation {
+  padding: 0 2px;
+  border-radius: 3px;
+  background: color-mix(in srgb, var(--ow-accent) 7%, transparent);
+  font-family: 'Latin Modern Math', 'Cambria Math', Georgia, serif;
+  font-style: italic;
+}
+
+.ow-math {
+  font-family: 'Latin Modern Math', 'Cambria Math', Georgia, serif;
+  font-style: italic;
+  white-space: nowrap;
+}
+
+.ow-math--raw {
+  font-family: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, monospace;
+  font-style: normal;
+}
+
+.ow-math-symbol {
+  font-style: normal;
+}
+
+.ow-math sup,
+.ow-math sub {
+  font-size: 0.72em;
+  font-style: normal;
+}
+
+.ow-math-frac {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  vertical-align: middle;
+  margin: 0 2px;
+  line-height: 1.15;
+}
+
+.ow-math-frac-top {
+  padding: 0 3px;
+  border-bottom: 1px solid currentColor;
+}
+
+.ow-math-frac-bottom {
+  padding: 0 3px;
+}
+
+.ow-math-root {
+  white-space: nowrap;
+}
+
+.ow-math-root-sign {
+  font-style: normal;
+}
+
+.ow-math-root-body {
+  border-top: 1px solid currentColor;
+  padding: 0 2px;
+}
+
+/* A tag keeps its hash, because a tag without one reads as a word. */
+.ow-inline--tag {
+  color: var(--ow-accent);
+  font-weight: var(--ow-type-weight-medium, 500);
+}

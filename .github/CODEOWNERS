@@ -1,0 +1,3 @@
+# One maintainer, so every path has the same owner. It exists so GitHub asks a
+# reviewer when a pull request arrives from outside, not to divide the work.
+* @Redcool47

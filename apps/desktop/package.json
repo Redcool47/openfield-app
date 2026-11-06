@@ -1,0 +1,65 @@
+{
+  "name": "@openfield/desktop",
+  "productName": "Openfield",
+  "copyright": "Copyright (c) 2026 Openfield contributors",
+  "version": "0.2.0",
+  "private": true,
+  "type": "module",
+  "description": "The Openfield desktop shell. Owns the workspace; the renderer may only call commands.",
+  "main": "dist/main/index.js",
+  "scripts": {
+    "dev": "node bin/dev.mjs",
+    "build": "node bin/dev.mjs --package",
+    "dist": "node bin/dev.mjs --package && electron-builder --win nsis portable"
+  },
+  "//dependencies": "Only genuine runtime dependencies belong here. The @ow/* workspace packages are build-time only: esbuild inlines them into dist/main/index.js. Listing them here made electron-builder follow workspace symlinks that point outside apps/desktop, which it cannot package.",
+  "dependencies": {
+    "better-sqlite3": "11.7.0"
+  },
+  "build": {
+    "appId": "dev.openfield.desktop",
+    "productName": "Openfield",
+    "copyright": "Copyright (c) 2026 Openfield contributors",
+    "directories": {
+      "output": "../../release",
+      "buildResources": "build"
+    },
+    "files": [
+      "dist/**/*",
+      "package.json",
+      "!**/*.map",
+      "!node_modules/*/{test,__tests__,tests,example,examples,doc,docs}/**",
+      "!dist/renderer/harness.html",
+      "!dist/renderer/harness-stub.js"
+    ],
+    "asarUnpack": [
+      "**/*.node"
+    ],
+    "win": {
+      "icon": "build/logo.png",
+      "target": [
+        { "target": "nsis", "arch": ["x64"] },
+        { "target": "portable", "arch": ["x64"] },
+        { "target": "zip", "arch": ["x64"] }
+      ],
+      "artifactName": "Openfield-${version}-${arch}.${ext}"
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowElevation": true,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "Openfield",
+      "installerIcon": "build/icon.ico",
+      "uninstallerIcon": "build/icon.ico",
+      "installerHeaderIcon": "build/icon.ico",
+      "deleteAppDataOnUninstall": false,
+      "license": "../../LICENSE"
+    },
+    "portable": {
+      "artifactName": "Openfield-${version}-portable.${ext}"
+    }
+  }
+}

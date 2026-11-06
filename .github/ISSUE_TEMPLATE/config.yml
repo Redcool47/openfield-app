@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Read the limits first
+    url: https://github.com/Redcool47/openfield-app/blob/main/docs/gaps.md
+    about: What is missing, what is unproven and what is assumed, kept up to date.
+  - name: How the project is built
+    url: https://github.com/Redcool47/openfield-app/blob/main/CONTRIBUTING.md
+    about: The layer rules, the clean-room rules and how to run the gates.
